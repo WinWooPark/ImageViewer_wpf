@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using System.Threading.Tasks;
+using System.Windows.Documents.DocumentStructures;
 
 
 //여기에서 XML 데이터를 만들자.
@@ -14,15 +16,41 @@ namespace LogViewer.Library
     {
         public LogData() { }
 
-        public static string CreateLogData(int Priority, string Msg, int FuncStep = 2)
+        public static string CreateLogData(string IP, int Priority, string Msg, int FuncStep = 2)
         {
             string strDate = GetCurrentTime24Hour();
             string strFunc = GetPreFuntionName(FuncStep);
             string strPriority = GetPriority(Priority);
             string strLog_Msg = Msg;
 
+            XmlDocument Xml = new XmlDocument();
+            XmlElement Root = Xml.CreateElement("LogData");
+            Xml.AppendChild(Root);
+
+            XmlElement Element = Xml.CreateElement("IP");
+            Element.InnerText = IP;
+            Root.AppendChild(Element);
+
+            Element = Xml.CreateElement(csConstant.coDate);
+            Element.InnerText = strDate;
+            Root.AppendChild(Element);
+
+            Element = Xml.CreateElement(csConstant.coFunc);
+            Element.InnerText = strDate;
+            Root.AppendChild(Element);
+
+            Element = Xml.CreateElement(csConstant.coPriority);
+            Element.InnerText = strPriority;
+            Root.AppendChild(Element);
+
+            Element = Xml.CreateElement(csConstant.coLogMsg);
+            Element.InnerText = strLog_Msg;
+            Root.AppendChild(Element);
+
+            string xmlString = Root.OuterXml;
+
             string SendMsg = string.Join(" ", strDate, strFunc, strPriority, strLog_Msg);
-            return SendMsg;
+            return xmlString;
         }
 
         public static string GetCurrentTime24Hour()

@@ -102,6 +102,7 @@ namespace dNetWork
     
         int                                     _NetMode;
         string                                  _IP;
+        public string IP { get { return _IP; } }
         int                                     _PortMun;
         int                                     _BufferSize;
         public int BufferSize { get { return _BufferSize; } }
@@ -128,6 +129,8 @@ namespace dNetWork
         Thread                                  _ClientRecvThread;
         protected bool                          _IsClientRecvRun;
 
+
+        Action<string>                          _Callback;
         public csNetWork() { }
 
         public void initNetWork(int NetMode, string IP = "127.0.0.1", int PortNum = 5000, int BufferSize = 1024, bool MultiClient = false) 
@@ -160,12 +163,18 @@ namespace dNetWork
             //클라이언트의 연결 대기
             _Server.Start();
 
+            _ClientList = new List<ClientInfo>();
+
+            _ServerSendlock = new object();
+
             //다중 클라이언트 연결을 위해 Accept 내용 Thread로 루틴 분리.
             _AcceptClientThread = new Thread(Thread_MultiClientAccept);
             _AcceptClientThreadRun = true;
             _AcceptClientThread.Start();
 
             //Client에서 날아온 메시지 처리.
+            _MessageLooplock = new object();
+            _MessageQueue = new ConcurrentQueue<MessageData>();
             _MessageLoopThread = new Thread(Thread_MessageLoop);
             _IsMeddageLoopRun = true;
             _MessageLoopThread.Start();
@@ -173,15 +182,16 @@ namespace dNetWork
         private void initClientNetWork(string IP = "127.0.0.1", int PortNum = 5000, int BufferSize = 1024, bool MultiClient = false)
         {
             _Client = new TcpClient(IP, PortNum);
+           // _Client.Connect(IP, PortNum);
 
             if (_Client == null) return;
 
-            _Client.Connect(IP, PortNum);
-
             _ClientStrem = _Client.GetStream();
+
+            _ClientSendlock = new object(); 
         }
 
-        private void ClientToServerSendData(string messageToSend) 
+        public void ClientToServerSendData(string messageToSend) 
         {
             lock (_ClientSendlock) 
             {
@@ -193,7 +203,7 @@ namespace dNetWork
 
         private void ServerToClientSendData(string IP , string messageToSend)
         {
-            lock (_ClientSendlock)
+            lock (_ServerSendlock)
             {
                 byte[] data = Encoding.ASCII.GetBytes(messageToSend);
 
@@ -205,23 +215,26 @@ namespace dNetWork
 
         private void Thread_MultiClientAccept() 
         {
-            try
+            while (_AcceptClientThreadRun = true) 
             {
-                //서버에 연결 요청된 Client 반환
-                TcpClient client = _Server.AcceptTcpClient();
+                try
+                {
+                    //서버에 연결 요청된 Client 반환
+                    TcpClient client = _Server.AcceptTcpClient();
 
-                //다중 클라이언트 관리를 하기 위해 Client info class 생성
-                ClientInfo info = new ClientInfo();
-                info.CreateClientInfo(client, this);
+                    //다중 클라이언트 관리를 하기 위해 Client info class 생성
+                    ClientInfo info = new ClientInfo();
+                    info.CreateClientInfo(client, this);
 
-                //생성한 각각 Client 마다 각자 Recv thread 생성
-                _ClientList.Add(info);
-            }
-            catch (Exception ex)
-            {
-                // 연결이 안될경우 모든 Client를 닫아 버린다.
-                foreach (ClientInfo client in _ClientList) client.CloseClient();
-                return;
+                    //생성한 각각 Client 마다 각자 Recv thread 생성
+                    _ClientList.Add(info);
+                }
+                catch (Exception ex)
+                {
+                    // 연결이 안될경우 모든 Client를 닫아 버린다.
+                    foreach (ClientInfo client in _ClientList) client.CloseClient();
+                    return;
+                }
             }
         }
 
@@ -245,8 +258,14 @@ namespace dNetWork
 
                     ServerToClientSendData(Msg.IP, "ACK");
 
+                    _Callback(Msg.Msg);
                 }
             }
+        }
+
+        public void MessageLoopCallBack(Action<string> callback) 
+        {
+            _Callback = callback;
         }
     }
 }
