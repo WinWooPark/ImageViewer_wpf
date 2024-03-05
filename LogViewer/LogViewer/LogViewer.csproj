@@ -30,12 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="SystemLib\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\dNetwork\dNetwork.csproj" />
-    <ProjectReference Include="..\dSharedMemory\dSharedMemory.csproj" />
   </ItemGroup>
 
 </Project>
