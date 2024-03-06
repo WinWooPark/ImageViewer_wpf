@@ -7,25 +7,20 @@
         mc:Ignorable="d"
         Title="LogViewer" Height="450" Width="800" Background="#FF1C2135">
     <Grid>
-        <ListView x:Name="ListView01" Background="#FF2E3347" BorderBrush="#FFF0F2F5" Foreground="#FFF2F3F7" RenderTransformOrigin="0.5,0.5" Margin="6,66,10,6" ItemsSource="{Binding mainModel}">
+        <ListView ItemsSource="{Binding LogData}" x:Name="ListView01" Background="#FF2E3347" BorderBrush="#FFF0F2F5" Foreground="#FFF2F3F7" RenderTransformOrigin="0.5,0.5" Margin="6,66,10,6" >
             <ListView.View>
                 <GridView>
                     <!-- Date 헤더 관련 -->
-                    <GridViewColumn Header="Date" Width="100" DisplayMemberBinding="{Binding _Date}">
+                    <GridViewColumn Header="Date" Width="100" DisplayMemberBinding="{Binding Date}">
                         <GridViewColumn.HeaderContainerStyle>
                             <Style TargetType="GridViewColumnHeader">
                                 <Setter Property="Background" Value="#FF2E3347"/>
                                 <Setter Property="Foreground" Value="White"/>
                             </Style>
                         </GridViewColumn.HeaderContainerStyle>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Date}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <!-- Function 헤더 관련 -->
-                    <GridViewColumn Header="Function" Width="127" DisplayMemberBinding="{Binding _Function}">
+                    <GridViewColumn Header="Function" Width="127" DisplayMemberBinding="{Binding Func}">
                         <GridViewColumn.HeaderContainerStyle>
                             <Style TargetType="GridViewColumnHeader">
                                 <Setter Property="Background" Value="#FF2E3347"/>
@@ -34,7 +29,7 @@
                         </GridViewColumn.HeaderContainerStyle>
                     </GridViewColumn>
                     <!-- Priority 헤더 관련 -->
-                    <GridViewColumn Header="Priority" Width="50" DisplayMemberBinding="{Binding _Priority}">
+                    <GridViewColumn Header="Priority" Width="50" DisplayMemberBinding="{Binding Priority}">
                         <GridViewColumn.HeaderContainerStyle>
                             <Style TargetType="GridViewColumnHeader">
                                 <Setter Property="Background" Value="#FF2E3347"/>
@@ -43,7 +38,7 @@
                         </GridViewColumn.HeaderContainerStyle>
                     </GridViewColumn>
                     <!-- Log Message 헤더 관련 -->
-                    <GridViewColumn Header="Log Message" Width="500" DisplayMemberBinding="{Binding _Log_Message}">
+                    <GridViewColumn Header="Log Message" Width="500" DisplayMemberBinding="{Binding Log_Msg}">
                         <GridViewColumn.HeaderContainerStyle>
                             <Style TargetType="GridViewColumnHeader">
                                 <Setter Property="Background" Value="#FF2E3347"/>
@@ -63,6 +58,5 @@
         </ListView>
 
         <Image HorizontalAlignment="Left" Height="44" Margin="10,10,0,0" VerticalAlignment="Top" Width="187" Image.Source="E:\5. Project_Test\3. WPF_ImageViewer\LogViewer\LogViewer\ICon\intek_logo.png"/>
-
     </Grid>
 </Window>

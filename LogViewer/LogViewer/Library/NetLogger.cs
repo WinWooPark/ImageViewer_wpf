@@ -20,8 +20,13 @@ namespace dNetwork
         {
             initNetWork(NetMode, IP, PortNum, BufferSize, MultiClient);
             lockObject = new object();
-            MessageLoopCallBack(LogMassageCallBack);
-        } 
+            //MessageLoopCallBack(LogMassageCallBack);
+        }
+
+        ~csNetLogger()
+        {
+            ExitNetWork();
+        }
 
         public static csNetLogger CreateInstance(int NetMode, string IP = "127.0.0.1", int PortNum = 5000, int BufferSize = 1024, bool MultiClient = false)
         {
