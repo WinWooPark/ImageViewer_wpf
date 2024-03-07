@@ -9,8 +9,6 @@ using System.Collections.ObjectModel;
 using LogViewer.Model;
 using System.Diagnostics.Eventing.Reader;
 using System.Windows.Interop;
-using LogViewer.Library;
-using dNetwork;
 using System.Xml;
 using System.Data.SqlTypes;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -18,22 +16,16 @@ using System.Windows.Threading;
 using System.Windows.Controls;
 using System.Web;
 using Microsoft.VisualBasic;
+using System.Windows.Shapes;
+using dNetwork;
 
 namespace LogViewer.ViewModel
 {
-    public class csLogData
-    {
-        public string Date { get; set; }
-        public string Func { get; set; }
-        public string Priority { get; set; }
-        public string Log_Msg { get; set; }
-    }
-
     class MainViewerModel : INotifyPropertyChanged
     {
-        private ObservableCollection<csLogData> _LogData;
+        private ObservableCollection<LogData> _LogData;
 
-        public ObservableCollection<csLogData> LogData
+        public ObservableCollection<LogData> LogData
         {
             get { return _LogData; }
             set
@@ -44,85 +36,54 @@ namespace LogViewer.ViewModel
             }
         }
 
+        MainModel _mainModel = null;
         public MainViewerModel()
         {
-            LogData = new ObservableCollection<csLogData> ();
-            Test();
+            LogData = new ObservableCollection<LogData> ();
 
-            //LogData = new ObservableCollection<csLogData>
-            //{
-            //    new csLogData{ Date ="12:55:12", Func = "FUNC" , Priority = "HIGHT" ,Log_Msg = "TEST"},
-            //    new csLogData{ Date ="12:55:12", Func = "FUNC" , Priority = "HIGHT" ,Log_Msg = "TEST"},
-            //    new csLogData{ Date ="12:55:12", Func = "FUNC" , Priority = "HIGHT" ,Log_Msg = "TEST"},
-            //    new csLogData{ Date ="12:55:12", Func = "FUNC" , Priority = "HIGHT" ,Log_Msg = "TEST"},
-            //    new csLogData{ Date ="12:55:12", Func = "FUNC" , Priority = "HIGHT" ,Log_Msg = "TEST"},
-            //    new csLogData{ Date ="12:55:12", Func = "FUNC" , Priority = "HIGHT" ,Log_Msg = "TEST"},
-            //    new csLogData{ Date ="12:55:12", Func = "FUNC" , Priority = "HIGHT" ,Log_Msg = "TEST"},
-            //    new csLogData{ Date ="12:55:12", Func = "FUNC" , Priority = "HIGHT" ,Log_Msg = "TEST"},
-            //    new csLogData{ Date ="12:55:12", Func = "FUNC" , Priority = "HIGHT" ,Log_Msg = "TEST"},
-            //    new csLogData{ Date ="12:55:12", Func = "FUNC" , Priority = "HIGHT" ,Log_Msg = "TEST"},
-            //    new csLogData{ Date ="12:55:12", Func = "FUNC" , Priority = "HIGHT" ,Log_Msg = "TEST"}
-            //};
+            _mainModel = new MainModel ();
+            _mainModel.Integrated.Server.MessageLoopCallBack(CallbackLogMessage);
         }
 
-        csNetLogger Server;
+        ~MainViewerModel()
+        {
         
-
-        void TestBinding(string str) 
-        {
-
-           
-
-
-            //Dispatcher.Invoke(new Action<string,string, string,string>(UpdateUI),strdate, strfunc, strpriority, strmsg);
-
         }
 
-        string strip;
-        string strdate;
-        string strfunc;
-        string strpriority;
-        string strmsg;
-
-
-        private void UpdateUI(string strdate, string strfunc, string strpriority, string strmsg)
+        public void CallbackLogMessage(string Packet)
         {
+            LogData Data = _mainModel.DeserializePacketAndPushQueue(Packet);
+
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
                 // UI 업데이트 코드
-               UItest(strdate, strfunc, strpriority, strmsg);
-            });
+                UpdataUI(Data);
+            }
+            );
         }
 
-        void UItest(string strdate, string strfunc, string strpriority, string strmsg) 
+        public void CloseViewModel() 
         {
-            LogData.Add(new csLogData { Date = strdate, Func = strfunc, Priority = strpriority, Log_Msg = strmsg });
+            _mainModel.CloseProgram();
         }
 
-        public delegate void CallbackFunction(string s, string b, string c, string d);
 
-        void Test() 
+        void UpdataUI(LogData Data) 
         {
-           Server = new csNetLogger(dNetWork.Constant.ServerMode);
+            _LogData.Add(Data);
 
-           // CallbackFunction CallBack = (string a, string b, string c, string d) => UpdateUI(a, b, c, d);
-            Server.MessageLoopCallBack(UpdateUI);
+            if (_LogData.Count == 100) _LogData.RemoveAt(0);
             
         }
 
-    
-
+        /// <Event Handler>
         public event PropertyChangedEventHandler? PropertyChanged;
-        
-        //private void OnPropertyChanged(string propertyName)
-        //{
-        //    if (PropertyChanged != null)
-        //        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        //}
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        private void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
+        /// </Event Handler>
     }
 }

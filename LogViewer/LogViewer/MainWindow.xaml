@@ -4,10 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LogViewer"
+        Closing = "MainWindow_Closing"
         mc:Ignorable="d"
         Title="LogViewer" Height="450" Width="800" Background="#FF1C2135">
     <Grid>
-        <ListView ItemsSource="{Binding LogData}" x:Name="ListView01" Background="#FF2E3347" BorderBrush="#FFF0F2F5" Foreground="#FFF2F3F7" RenderTransformOrigin="0.5,0.5" Margin="6,66,10,6" >
+        <ListView ItemsSource="{Binding LogData}" ScrollViewer.VerticalScrollBarVisibility="Auto" x:Name="ListView01" Background="#FF2E3347" BorderBrush="#FFF0F2F5" Foreground="#FFF2F3F7" RenderTransformOrigin="0.5,0.5" Margin="6,66,10,6" >
             <ListView.View>
                 <GridView>
                     <!-- Date 헤더 관련 -->

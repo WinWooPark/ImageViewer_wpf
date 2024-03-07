@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogViewer.Library
+namespace dNetWork
 {
     public static class csConstant
     {

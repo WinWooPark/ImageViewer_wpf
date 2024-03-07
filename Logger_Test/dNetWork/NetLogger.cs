@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using dNetwork;
-using LogViewer.Library;
 using System.Xml;
 
 namespace dNetwork
@@ -16,11 +15,11 @@ namespace dNetwork
         private static csNetLogger? Instance = null;
 
         // 생성자를 private로 선언하여 외부에서 직접 생성 막음
-        public csNetLogger(int NetMode, string IP = "127.0.0.1", int PortNum = 5000, int BufferSize = 1024, bool MultiClient = false)
+        private csNetLogger(int NetMode, string IP = "127.0.0.1", int PortNum = 5000, int BufferSize = 1024, bool MultiClient = false)
         {
             initNetWork(NetMode, IP, PortNum, BufferSize, MultiClient);
             lockObject = new object();
-            //MessageLoopCallBack(LogMassageCallBack);
+            if(NetMode == Constant.ServerMode) MessageLoopCallBack(LogMassageCallBack);
         }
 
         ~csNetLogger()
@@ -45,29 +44,14 @@ namespace dNetwork
         {
             lock (lockObject) 
             {
-                string SendMag = LogData.CreateLogData(IP, Priority, Msg);
+                string SendMag = LogData.CreateLogData(ClientMyPort, Priority, Msg,3);
                 ClientToServerSendData(SendMag);
             }
         }
 
-        public void LogMassageCallBack(string str) 
+        public void LogMassageCallBack(string Packet) 
         {
-            string Data = str;
-
-            XmlDocument XML = new XmlDocument();
-            XML.LoadXml(Data);
-
-            XmlElement root = XML.DocumentElement;
-
-            foreach (XmlNode childNode in root.ChildNodes)
-            {
-                if (childNode is XmlElement)
-                {
-                    XmlElement childElement = (XmlElement)childNode;
-                    string TESt = childElement.InnerText;
-                }
-            }
-
+            LogData obj = LogData.DeserializePacket(Packet);
         }
 
     }

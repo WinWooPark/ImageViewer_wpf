@@ -47,8 +47,7 @@ namespace dNetWork
             }
             else 
             {
-                
-                _Timer.Close();
+                _Timer.Stop();
             }
             
         }
@@ -89,7 +88,7 @@ namespace dNetWork
         }
         private void Thread_Recv() 
         {
-            bool Exit = false;
+            
             while (_IsRecvThreadRun == true) 
             {
                 //여기서 Client 에서 날아온 데이터를 읽는다.
@@ -116,9 +115,8 @@ namespace dNetWork
                     message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                 }
                 catch 
-                {
-                    break;
-                    //_Server.AbnormalClientTermination(this); 
+                { 
+                    _Server.AbnormalClientTermination(this); 
                 };
 
                 csNetWorkPacket obj = csNetWorkPacket.DeserializePacket(message);
@@ -129,7 +127,7 @@ namespace dNetWork
                 _Server.PushMessage(obj);
 
                 Thread.Sleep(1);
-            }   
+            }
         }
     }
 
@@ -273,7 +271,6 @@ namespace dNetWork
                     byte[] sizeBuffer = new byte[4];
 
                     bytesRead = _ClientStrem.Read(sizeBuffer, 0, sizeBuffer.Length);
-
                     int length = BitConverter.ToInt32(sizeBuffer, 0);
 
                     byte[] buffer = new byte[length];
@@ -309,10 +306,13 @@ namespace dNetWork
                         break;
 
                     case Constante._sExit:
-                        ExitClientNetWork();
+                        break;
+                        
                         break;
                 }
             }
+
+            ExitClientNetWork();
         }
 
         public void ExitNetWork() 
@@ -331,11 +331,7 @@ namespace dNetWork
 
         private void ExitServerNetWork() 
         {
-            BroadCasting("", Constante._Exit);
-            //1. 연결된 Client 모두 종료
-            foreach (ClientInfo client in _ClientList) client.CloseClient();
-
-            //2. 서버의 Listen 상태 및 Strem 종료
+            //1. 서버의 Listen 상태 및 Strem 종료
             if (_Server != null) 
             {
                 _Server.Stop();
@@ -344,9 +340,12 @@ namespace dNetWork
             
             if(_ServerStrem != null) _ServerStrem.Close();
 
-            //3. Accept Thread 종료
+            //2. Accept Thread 종료
             _AcceptClientThreadRun = false;
             _AcceptClientThread.Join();
+
+            //3. 연결된 Client 모두 종료
+            foreach (ClientInfo client in _ClientList) client.CloseClient();
 
             //4. Clinet List 클리어
             _ClientList.Clear();
@@ -354,7 +353,7 @@ namespace dNetWork
             //5. MessageQueue Clear
             _MessageQueue.Clear();
 
-            //5. MessageQueue thread 종료
+            //6. MessageQueue thread 종료
             _IsMeddageLoopRun = false;
             _MessageLoopThread.Join();
         }
@@ -372,7 +371,6 @@ namespace dNetWork
             //2. Recv Thread 종료
             _IsClientRecvRun = false;
             _ClientRecvThread.Join();
-
         }
 
         public void ClientToServerSendData(string messageToSend ,int type = Constante._Data) 
@@ -419,32 +417,6 @@ namespace dNetWork
                 // Main Data을 읽는다.
                 data = Encoding.ASCII.GetBytes(packet);
                 clientinfo.ClientStrem.Write(data, 0, data.Length); // 데이터 전송
-            }
-        }
-
-        void BroadCasting(string messageToSend, int type = Constante._Data) 
-        {
-            lock (_ServerSendlock)
-            {
-                //받은 메시지를 Json으로 패킷 형태로 보낸다.
-                string packet = csNetWorkPacket.CreateNetWorkPacket(_NetMode, _IP, _PortMun, type, messageToSend);
-
-                //Port 번호로 식별하여 보낼 Client를 찾는다.
-                foreach (ClientInfo client in _ClientList)
-                {
-                    if (client == null) return;
-
-                    byte[] data = null;
-
-                    //가변 데이터를 보내기 위해 데이터 길이 부터 보낸뒤
-                    string DataLength = packet.Length.ToString();
-                    data = Encoding.ASCII.GetBytes(DataLength);
-                    client.ClientStrem.Write(data, 0, data.Length);
-
-                    // Main Data을 읽는다.
-                    data = Encoding.ASCII.GetBytes(packet);
-                    client.ClientStrem.Write(data, 0, data.Length); // 데이터 전송
-                }
             }
         }
 
@@ -539,7 +511,6 @@ namespace dNetWork
                 }
             }
 
-            return;
         }
 
 
