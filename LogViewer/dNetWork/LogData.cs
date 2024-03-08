@@ -7,6 +7,7 @@ using System.Xml;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 
 //여기에서 XML 데이터를 만들자.
@@ -46,13 +47,31 @@ namespace dNetwork
             return Packet;
         }
 
+        static bool IsValidJson(string jsonString)
+        {
+            try
+            {
+                JToken.Parse(jsonString);
+                return true;
+            }
+            catch (JsonReaderException)
+            {
+                return false;
+            }
+        }
+
         public static LogData DeserializePacket(string Packet) 
         {
             if (Packet == null) return null;
 
-            LogData obj = JsonConvert.DeserializeObject<LogData>(Packet);
+            bool isValidJson = IsValidJson(Packet);
 
-            return obj;
+            if (isValidJson)
+            {
+                LogData obj = JsonConvert.DeserializeObject<LogData>(Packet);
+                return obj;
+            }
+            else return null;
         }
 
         public static string GetCurrentTime24Hour()

@@ -28,6 +28,8 @@ namespace dNetWork
         Thread?                              _RecvThread;
         bool                                 _IsRecvThreadRun = false;
         int                                  _ClientPort;
+        event EventHandler                   _ClientDisconnet;
+        AutoResetEvent                     _ThreadExit;
 
         public int ClientPort { get { return _ClientPort; } }
         public string ClientIP { get { return _ClientIP; } }
@@ -58,7 +60,7 @@ namespace dNetWork
             _Server.ServerToClientSendData(_ClientPort, "", Constante._Heartbeat);
         }
 
-        public void CreateClientInfo(TcpClient Client, csNetWork Server) 
+        public void CreateClientInfo(TcpClient Client, csNetWork Server, EventHandler EventClient)
         {
             this._Client = Client;
             this._Server = Server;
@@ -69,13 +71,17 @@ namespace dNetWork
             this._RecvThread = new Thread(Thread_Recv);
             this._IsRecvThreadRun = true;
             this._RecvThread.Start();
+            
+            this._ClientDisconnet = EventClient;
 
-            startHeartbeatTimer(true);
+            _ThreadExit = new AutoResetEvent(false);
+         
+            // startHeartbeatTimer(true);
         }
 
         public void CloseClient() 
         {
-            startHeartbeatTimer(false);
+            //startHeartbeatTimer(false);
 
             _Client.Close();
             _Client.Dispose();
@@ -84,12 +90,12 @@ namespace dNetWork
             _ClientStrem.Dispose();
 
             _IsRecvThreadRun = false;
-            _RecvThread.Join();
-
+            _ThreadExit.WaitOne(1000);
         }
         private void Thread_Recv() 
         {
             bool Exit = false;
+
             while (_IsRecvThreadRun == true) 
             {
                 //여기서 Client 에서 날아온 데이터를 읽는다.
@@ -115,11 +121,12 @@ namespace dNetWork
 
                     message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                 }
-                catch 
+                catch (IOException e)
                 {
-                    break;
-                    //_Server.AbnormalClientTermination(this); 
-                };
+                    _Server._CallbackErrorFunc("Server Read Fail Please Ckeck Server Socket.");
+                    _ClientDisconnet.Invoke(this, EventArgs.Empty);
+                    continue;
+                }
 
                 csNetWorkPacket obj = csNetWorkPacket.DeserializePacket(message);
 
@@ -129,7 +136,9 @@ namespace dNetWork
                 _Server.PushMessage(obj);
 
                 Thread.Sleep(1);
-            }   
+            }
+            _ThreadExit.Set();  
+            return;
         }
     }
 
@@ -173,10 +182,13 @@ namespace dNetWork
         public int ClientMyPort { get { return _clientMyPort; } }
 
 
-        Action<string>                          _CallbackFunc;
-        Action<string>                          _CallbackLiveFunc;
+        public Action<string>                          _CallbackFunc;
+        public Action<string>                          _CallbackErrorFunc;
 
-        public void SetLiveCallBack(Action<string> action) { _CallbackLiveFunc = action; }
+        public event EventHandler                      _ClientDisconnet;
+        public event EventHandler                      _ServerDisconnet;
+
+
         public csNetWork() { }
 
         public void initNetWork(int NetMode, string IP = "127.0.0.1", int PortNum = 5000, int BufferSize = 2048, bool MultiClient = false) 
@@ -227,7 +239,8 @@ namespace dNetWork
         }
         private void initClientNetWork(string IP = "127.0.0.1", int PortNum = 5000, int BufferSize = 2048, bool MultiClient = false)
         {
-            _Client = new TcpClient();
+            if(_Client == null)
+                _Client = new TcpClient();
 
             if (_Client == null) return;
 
@@ -251,9 +264,11 @@ namespace dNetWork
             _clientMyPort = ((IPEndPoint)_Client.Client.LocalEndPoint).Port;
             _ClientStrem = _Client.GetStream();
 
-            _ClientSendlock = new object();
+            if(_ClientSendlock == null)
+                _ClientSendlock = new object();
 
-            _ClientRecvThread = new Thread(Thread_CilentRecv);
+            if(_ClientRecvThread == null)
+                _ClientRecvThread = new Thread(Thread_CilentRecv);
             _IsClientRecvRun = true;
             _ClientRecvThread.Start();
 
@@ -283,10 +298,9 @@ namespace dNetWork
 
                     message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                 }
-                catch
+                catch (IOException e)
                 {
-
-                    
+                    _CallbackErrorFunc("Server Read Fail Please Ckeck Server Socket.");
                 };
 
                 csNetWorkPacket packet = csNetWorkPacket.DeserializePacket(message);
@@ -323,7 +337,6 @@ namespace dNetWork
                     ExitServerNetWork();
                     break;
                 case Constant.ClientMode:
-                    //ClientToServerSendData("Exit"); //Server로 종료 메시지 송신
                     ExitClientNetWork();
                     break;
             }
@@ -384,16 +397,30 @@ namespace dNetWork
 
                 byte[] data = null;
 
-                //가변 데이터를 보내기 위해 데이터 길이 부터 보낸뒤
-                string DataLength = packet.Length.ToString();
-                data = Encoding.ASCII.GetBytes(DataLength);
-                _ClientStrem.Write(data, 0, data.Length);
+                try 
+                {
+                    //가변 데이터를 보내기 위해 데이터 길이 부터 보낸뒤
+                    string DataLength = packet.Length.ToString();
+                    data = Encoding.ASCII.GetBytes(DataLength);
+                    _ClientStrem.Write(data, 0, data.Length);
+                    _ClientStrem.Flush();
 
-                Thread.Sleep(10);
+                    Thread.Sleep(10);
 
-                // Main Data을 읽는다.
-                data = Encoding.ASCII.GetBytes(packet);
-                _ClientStrem.Write(data, 0, data.Length); // 데이터 전송
+                    // Main Data을 읽는다.
+                    data = Encoding.ASCII.GetBytes(packet);
+                    _ClientStrem.Write(data, 0, data.Length); // 데이터 전송
+                    _ClientStrem.Flush();
+                }
+                catch (IOException e)
+                {
+                    _CallbackErrorFunc("Server Wirte Fail Please Check Client Socket");
+                    
+                    AbnormalServerTermination();
+
+                    return;
+                }
+
             }
         }
 
@@ -410,15 +437,26 @@ namespace dNetWork
                 if (clientinfo == null) return;
 
                 byte[] data = null;
+                try 
+                {
+                    //가변 데이터를 보내기 위해 데이터 길이 부터 보낸뒤
+                    string DataLength = packet.Length.ToString();
+                    data = Encoding.ASCII.GetBytes(DataLength);
+                    clientinfo.ClientStrem.Write(data, 0, data.Length);
+                    clientinfo.ClientStrem.Flush();
 
-                //가변 데이터를 보내기 위해 데이터 길이 부터 보낸뒤
-                string DataLength = packet.Length.ToString();
-                data = Encoding.ASCII.GetBytes(DataLength);
-                clientinfo.ClientStrem.Write(data, 0, data.Length);
-
-                // Main Data을 읽는다.
-                data = Encoding.ASCII.GetBytes(packet);
-                clientinfo.ClientStrem.Write(data, 0, data.Length); // 데이터 전송
+                    // Main Data을 읽는다.
+                    data = Encoding.ASCII.GetBytes(packet);
+                    clientinfo.ClientStrem.Write(data, 0, data.Length); // 데이터 전송
+                    clientinfo.ClientStrem.Flush();
+                }
+                catch (IOException e) 
+                {
+                    _CallbackErrorFunc("Client Wirte Fail Please Check Client Socket");
+                    AbnormalClientTermination(clientinfo);
+                    return;
+                }
+                
             }
         }
 
@@ -440,10 +478,12 @@ namespace dNetWork
                     string DataLength = packet.Length.ToString();
                     data = Encoding.ASCII.GetBytes(DataLength);
                     client.ClientStrem.Write(data, 0, data.Length);
+                    client.ClientStrem.Flush();
 
                     // Main Data을 읽는다.
                     data = Encoding.ASCII.GetBytes(packet);
                     client.ClientStrem.Write(data, 0, data.Length); // 데이터 전송
+                    client.ClientStrem.Flush();
                 }
             }
         }
@@ -452,10 +492,14 @@ namespace dNetWork
         {
             Error.CloseClient();
 
-            ClientInfo Info = _ClientList.Find(client => client.ClientPort == Error.ClientPort);
+            _ClientList.Remove(Error);
+        }
 
-            Info.CloseClient();
-
+        public void AbnormalServerTermination()
+        {
+            //서버가 닫치는 에러가 나면 소켓을 모두 닫고, 다시 서버와 연결을 시도한다. 이때 1000번 연결 시도하고 나서 안되면 return 해버린다.
+            ExitClientNetWork();
+            initClientNetWork(_IP, _PortMun, _BufferSize);
         }
 
         private void RemoveAndCloseCilent(csNetWorkPacket packet)
@@ -480,7 +524,9 @@ namespace dNetWork
 
                     //다중 클라이언트 관리를 하기 위해 Client info class 생성
                     ClientInfo info = new ClientInfo();
-                    info.CreateClientInfo(client, this);
+                    _ClientDisconnet = new EventHandler(EventAbnormalClientTermination);
+
+                    info.CreateClientInfo(client, this, _ClientDisconnet);
 
                     //생성한 각각 Client 마다 각자 Recv thread 생성
                     _ClientList.Add(info);
@@ -495,6 +541,8 @@ namespace dNetWork
                 }
             }
         }
+
+        public void ErrorCallBack(Action<string> ErrorMsg) { _CallbackErrorFunc = ErrorMsg; }
 
         public void MessageLoopCallBack(Action<string> callback) { _CallbackFunc = callback; }
 
@@ -518,8 +566,8 @@ namespace dNetWork
                     switch (packet.Type) 
                     {
                         case Constante._sHeartbeat:
-                            ServerToClientSendData(packet.Prot, "", Constante._Heartbeat);
-                            //_CallbackLiveFunc("하트비트 들어옴");
+                            //ServerToClientSendData(packet.Prot, "", Constante._Heartbeat);
+                           
                             break;
 
                         case Constante._sData:
@@ -542,6 +590,16 @@ namespace dNetWork
             return;
         }
 
+        void EventAbnormalClientTermination(object sender, EventArgs e)
+        {
+            AbnormalClientTermination((ClientInfo)sender);
+        }
+
+        void EventAbnormalServerTermination(object sender, EventArgs e)
+        {
+            Console.WriteLine("The threshold was reached.");
+            Environment.Exit(0);
+        }
 
     } // NetWork Class End
 } //namespace end

@@ -18,6 +18,7 @@ using System.Web;
 using Microsoft.VisualBasic;
 using System.Windows.Shapes;
 using dNetwork;
+using System.Windows;
 
 namespace LogViewer.ViewModel
 {
@@ -43,11 +44,17 @@ namespace LogViewer.ViewModel
 
             _mainModel = new MainModel ();
             _mainModel.Integrated.Server.MessageLoopCallBack(CallbackLogMessage);
+            _mainModel.Integrated.Server.ErrorCallBack(CallbackLogMessage);
         }
 
         ~MainViewerModel()
         {
         
+        }
+
+        void CallbackErrorMessage(string Msg) 
+        {
+            MessageBox.Show(Msg);
         }
 
         public void CallbackLogMessage(string Packet)
