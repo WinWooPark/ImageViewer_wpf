@@ -60,13 +60,18 @@ namespace LogViewer.ViewModel
         public void CallbackLogMessage(string Packet)
         {
             LogData Data = _mainModel.DeserializePacketAndPushQueue(Packet);
-
+            if (Data == null) return;
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            {
-                // UI 업데이트 코드
-                UpdataUI(Data);
-            }
+                {
+                    // UI 업데이트 코드
+                    UpdataUI(Data);
+
+                
+                }
             );
+
+            //콜백으로 날아온 Log File Queue 저장
+            _mainModel.Integrated.FileManager.MakeLogDataForFileDataAndAddFileData(Data);
         }
 
         public void CloseViewModel() 
