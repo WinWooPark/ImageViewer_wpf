@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibNetWork", "LibNetWork\LibNetWork.csproj", "{86F3496A-3AA9-4592-A828-71A86BA43579}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{86F3496A-3AA9-4592-A828-71A86BA43579}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86F3496A-3AA9-4592-A828-71A86BA43579}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86F3496A-3AA9-4592-A828-71A86BA43579}.Debug|x64.ActiveCfg = Release|x64
+		{86F3496A-3AA9-4592-A828-71A86BA43579}.Debug|x64.Build.0 = Release|x64
+		{86F3496A-3AA9-4592-A828-71A86BA43579}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86F3496A-3AA9-4592-A828-71A86BA43579}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86F3496A-3AA9-4592-A828-71A86BA43579}.Release|x64.ActiveCfg = Release|x64
+		{86F3496A-3AA9-4592-A828-71A86BA43579}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {284C2B36-F9AA-405E-AAA6-BC228A74C665}
+	EndGlobalSection
+EndGlobal

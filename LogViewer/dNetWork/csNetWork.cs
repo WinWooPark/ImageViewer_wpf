@@ -123,7 +123,6 @@ namespace dNetWork
                 }
                 catch (IOException e)
                 {
-                    _Server._CallbackErrorFunc("Server Read Fail Please Ckeck Server Socket.");
                     _ClientDisconnet.Invoke(this, EventArgs.Empty);
                     continue;
                 }
@@ -414,8 +413,6 @@ namespace dNetWork
                 }
                 catch (IOException e)
                 {
-                    _CallbackErrorFunc("Server Wirte Fail Please Check Client Socket");
-                    
                     AbnormalServerTermination();
 
                     return;

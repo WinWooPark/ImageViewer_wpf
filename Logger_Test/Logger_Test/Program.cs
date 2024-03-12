@@ -25,6 +25,8 @@ namespace Logger
                 Index = rand.Next(0, 4);
                 Logger.Log(dNetWork.csConstant.PriMid, LogMag[Index]);
 
+
+                Console.WriteLine(LogMag[Index]);
                 Thread.Sleep(1000);
             }
         }

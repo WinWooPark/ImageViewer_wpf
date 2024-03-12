@@ -44,10 +44,10 @@ namespace dFile
 
             //3. 현재 날짜의 폴더가 존재하는지 확인 존재 하는 폴더가 없으면 오늘 날짜 기준을 파일 생성
             string currentDay = DateTime.Now.ToString("yyyy.MM.dd");
-            _Foldername = string.Format(currentDay);
-            _FolderPath = string.Format("{0}\\{1}", _savePath, _Foldername);
+            string Foldername = string.Format(currentDay);
+            string FolderPath = string.Format("{0}\\{1}", _savePath, _Foldername);
 
-            if(CheckFolder(_FolderPath) == false) return;
+            CheckFolder(_FolderPath);
 
             //4. File 저장 Thread Run
             _WriteThread = new Thread(Thread_Write);
@@ -60,13 +60,16 @@ namespace dFile
 
        protected void CloseFile() 
         {
-            if(_FileWriteData.Count == 0)
+            if (_WriteThread != null) 
+            {
                 _IsWriteThreadRun = false;
-            else 
+                _WriteThread.Join();
+            }
 
-            _WriteThread.Join();
-
-            _FileWriter.Close();
+            if (_FileWriteData != null) _FileWriteData.Clear();
+            
+            if(_FileWriter != null)
+                _FileWriter.Close();
         }
 
        protected void AddFileWriteData(string WriteData) 
@@ -79,6 +82,7 @@ namespace dFile
 
             while (_IsWriteThreadRun)
             {
+                if (_FileWriteData.Count == 0 && _IsWriteThreadRun == false) break;
                 //Queue가 비어 있을때 예외
                 if (_FileWriteData.IsEmpty) continue;
 
@@ -138,7 +142,7 @@ namespace dFile
         {
             string currentTime = DateTime.Now.ToString("yyyy.MM.dd");
             string Foldername = string.Format(currentTime);
-            string FolderPath = string.Format("{0}\\{1}", _savePath, _Foldername);
+            
 
             if (Foldername != _Foldername)
             {
@@ -152,8 +156,8 @@ namespace dFile
             {
                 string FolderPath = string.Format("{0}\\{1}", _savePath, FolderName);
 
-                if (Directory.Exists(_FolderPath) == false)
-                    Directory.CreateDirectory(_FolderPath);
+                if (Directory.Exists(FolderPath) == false)
+                    Directory.CreateDirectory(FolderPath);
 
                 _Foldername = FolderName;
                 _FolderPath = FolderPath;
@@ -169,8 +173,8 @@ namespace dFile
 
             if (FileName != _FileName) 
             {
-
-                _FileWriter.Close();
+                if(_FileWriter != null)
+                    _FileWriter.Close();
 
                 CreateFile(FileName);
             }
