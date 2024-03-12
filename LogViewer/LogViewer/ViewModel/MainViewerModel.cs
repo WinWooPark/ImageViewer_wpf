@@ -19,6 +19,7 @@ using Microsoft.VisualBasic;
 using System.Windows.Shapes;
 using dNetwork;
 using System.Windows;
+using System.Windows.Markup;
 
 namespace LogViewer.ViewModel
 {
@@ -44,7 +45,8 @@ namespace LogViewer.ViewModel
 
             _mainModel = new MainModel ();
             _mainModel.Integrated.Server.MessageLoopCallBack(CallbackLogMessage);
-            _mainModel.Integrated.Server.ErrorCallBack(CallbackLogMessage);
+            _mainModel.Integrated.Server.ErrorCallBack(CallbackErrorMessage);
+           
         }
 
         ~MainViewerModel()
@@ -54,7 +56,13 @@ namespace LogViewer.ViewModel
 
         void CallbackErrorMessage(string Msg) 
         {
-            MessageBox.Show(Msg);
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                // Error 메시지 띄우기
+                MessageBox.Show(Msg);
+            }
+            );
+           
         }
 
         public void CallbackLogMessage(string Packet)
@@ -84,7 +92,7 @@ namespace LogViewer.ViewModel
         {
             _LogData.Add(Data);
 
-            if (_LogData.Count == 100) _LogData.RemoveAt(0);
+            if (_LogData.Count == 15) _LogData.RemoveAt(0);
             
         }
 

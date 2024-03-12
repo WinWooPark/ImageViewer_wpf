@@ -472,18 +472,7 @@ namespace dNetWork
                 {
                     if (client == null) return;
 
-                    byte[] data = null;
-
-                    //가변 데이터를 보내기 위해 데이터 길이 부터 보낸뒤
-                    string DataLength = packet.Length.ToString();
-                    data = Encoding.ASCII.GetBytes(DataLength);
-                    client.ClientStrem.Write(data, 0, data.Length);
-                    client.ClientStrem.Flush();
-
-                    // Main Data을 읽는다.
-                    data = Encoding.ASCII.GetBytes(packet);
-                    client.ClientStrem.Write(data, 0, data.Length); // 데이터 전송
-                    client.ClientStrem.Flush();
+                    ServerToClientSendData(client.ClientPort, packet, type);
                 }
             }
         }
@@ -492,6 +481,7 @@ namespace dNetWork
         {
             Error.CloseClient();
 
+            _CallbackErrorFunc(string.Format("Port : {0} Client Shut Down", Error.ClientPort));
             _ClientList.Remove(Error);
         }
 
@@ -530,6 +520,7 @@ namespace dNetWork
 
                     //생성한 각각 Client 마다 각자 Recv thread 생성
                     _ClientList.Add(info);
+                    _CallbackErrorFunc("Cilent 연결됨");
                 }
                 catch (Exception ex)
                 {
@@ -597,8 +588,7 @@ namespace dNetWork
 
         void EventAbnormalServerTermination(object sender, EventArgs e)
         {
-            Console.WriteLine("The threshold was reached.");
-            Environment.Exit(0);
+           
         }
 
     } // NetWork Class End

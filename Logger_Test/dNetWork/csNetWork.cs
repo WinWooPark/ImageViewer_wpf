@@ -389,7 +389,7 @@ namespace dNetWork
 
                 Thread.Sleep(10);
 
-                // Main Data을 읽는다.
+                // Main Data을 읽는다.Z
                 data = Encoding.ASCII.GetBytes(packet);
                 _ClientStrem.Write(data, 0, data.Length); // 데이터 전송
             }
