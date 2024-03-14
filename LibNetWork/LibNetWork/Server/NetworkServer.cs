@@ -26,8 +26,8 @@ namespace LibNetWork.Server
         bool _IsMessageLoopRun = false;
 
         //Property
-        public string IP { get { return _hostIp; } }
-        public int Port { get { return _hostPort; } }
+        public string HostIp { get { return _hostIp; } }
+        public int HostPort { get { return _hostPort; } }
 
 
         public NetworkServer()
@@ -102,6 +102,13 @@ namespace LibNetWork.Server
             }
             _AccpetThreadExit.Set();
             return;
+        }
+
+
+
+        void Thread_Monitor() 
+        {
+
         }
 
         void checkHeartbeat(ClientHandler Handler) 

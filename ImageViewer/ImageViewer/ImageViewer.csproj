@@ -6,6 +6,21 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Icon\intek_logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Data" Version="23.2.4" />
+    <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
+    <PackageReference Include="OpenCvSharp4" Version="4.9.0.20240103" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Icon\intek_logo.png" />
+  </ItemGroup>
 
 </Project>

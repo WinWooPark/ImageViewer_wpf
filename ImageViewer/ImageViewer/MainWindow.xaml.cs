@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ImageViewer.ViewModel;
+using ImageViewer.Model;
 
 namespace ImageViewer
 {
@@ -16,9 +18,18 @@ namespace ImageViewer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private MainViewModel _mainViewModel;
+
         public MainWindow()
         {
             InitializeComponent();
+            _mainViewModel = new MainViewModel();
+            this.DataContext = _mainViewModel;
         }
+
+
+
+
+
     }
 }

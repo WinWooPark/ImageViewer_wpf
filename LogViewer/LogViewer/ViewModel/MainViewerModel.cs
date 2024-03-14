@@ -46,6 +46,7 @@ namespace LogViewer.ViewModel
             _mainModel = new MainModel ();
             _mainModel.Integrated.Server.MessageLoopCallBack(CallbackLogMessage);
             _mainModel.Integrated.Server.ErrorCallBack(CallbackErrorMessage);
+            _mainModel.MainViewerModel = this;
            
         }
 

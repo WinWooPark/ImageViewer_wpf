@@ -9,6 +9,7 @@ using System.Collections.Concurrent;
 using System.Web;
 using System.Net.Sockets;
 using dNetwork;
+using LogViewer.ViewModel;
 
 namespace LogViewer.Model
 {
@@ -16,6 +17,14 @@ namespace LogViewer.Model
     {
         ConcurrentQueue<LogData> _logData;
         csIntegrated _integrated = null;
+        MainViewerModel _mainViewerModel = null;
+        public MainViewerModel MainViewerModel 
+        {
+            get { return _mainViewerModel; }
+            set { if(_mainViewerModel != value) _mainViewerModel = value; }
+        }
+
+
         public csIntegrated Integrated { get { return _integrated; } }
 
         public MainModel() 
