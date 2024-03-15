@@ -7,10 +7,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64</Platforms>
+    <ApplicationIcon>Icon\intek_logo_Short.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Icon\intek_logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Icon\intek_logo_Short.ico" />
   </ItemGroup>
 
   <ItemGroup>

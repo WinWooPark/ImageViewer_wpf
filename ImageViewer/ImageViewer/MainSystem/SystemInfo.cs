@@ -9,32 +9,50 @@ using OpenCvSharp;
 
 namespace ImageViewer.MainSystem
 {
-    class SystemInfo
+    public class SystemInfo
     {
+        public SystemInfo(){}
+        private MainViewModel _mainViewModel;
         Mat _image;
         byte[] _imageBuffer;
 
-        MainViewModel _mainViewModel;
-
-        public static void ImageRoad() 
+        public void SetViewModel(MainViewModel mainViewModel) 
+        {
+             _mainViewModel = mainViewModel;
+        }
+        public void ImageRoad() 
         {
             OpenFileDialog dlg = new OpenFileDialog();
             if (dlg.ShowDialog() == true) 
             {
-                Mat Image = Cv2.ImRead(dlg.FileName);
-
-                
+                _image = Cv2.ImRead(dlg.FileName);
             }
         }
 
-        public void GetViewModel(MainViewModel mainViewModel) 
+        public void ImageSave(string Path)
         {
-            _mainViewModel = mainViewModel;
+            if (_image.Empty()) return;
+
+            Cv2.ImWrite(Path, _image);
         }
 
-        public void TESTViewmodel() 
+        public void UpdateImage() 
         {
-            int a = _mainViewModel.Threshold;
+
+        }
+
+        public void ZoomIn() 
+        {
+            double zoom = _mainViewModel.Scale;
+            zoom += 0.1;
+            _mainViewModel.Scale = zoom;
+        }
+
+        public void ZoomOut() 
+        {
+            double zoom = _mainViewModel.Scale;
+            zoom -= 0.1;
+            _mainViewModel.Scale = zoom;
         }
     }
 }

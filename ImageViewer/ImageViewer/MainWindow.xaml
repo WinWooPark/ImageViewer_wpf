@@ -5,8 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageViewer"
         mc:Ignorable="d"
-        WindowState="Maximized"
-        WindowStyle="None"
         Background="#FF1C2135"
         Title="ImageViewer" Height="1050" Width="1680">
 
@@ -28,12 +26,9 @@
                     <ColumnDefinition Width="1*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <Grid Grid.Column="0">
-                    <Image Source="Icon\intek_logo.png" Margin ="10,10,10,10"/>
-                </Grid>
-                <Grid Grid.Column="2">
-                    <TextBlock Text="IMAGE VIEWER" FontSize="40" TextAlignment="Center" Foreground="White" Margin="0,20,0,0" FontFamily="Arial Black"></TextBlock>
-                </Grid>
+                <Image Grid.Column = "0" Source="Icon\intek_logo.png" Margin ="10,10,10,10"/>
+                
+                <TextBlock Grid.Column="2" Text="IMAGE VIEWER" FontSize="40" TextAlignment="Center" Foreground="White" Margin="0,20,0,0" FontFamily="Arial Black"/>
             </Grid>
         </Grid>
 
@@ -44,10 +39,18 @@
                     <ColumnDefinition Width="1*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <Grid Grid.Column="0">
-                    <ItemsControl Margin="5,5,5,5" Background="#303030"></ItemsControl>
+                <Grid  Grid.Column="0" Background="#303030" Margin="5,5,5,5">
+                    <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="None">
+                        <Image.LayoutTransform>
+                            <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" CenterX="{Binding CenterPoint.X}" CenterY="{Binding CenterPoint.Y}"/>
+                        </Image.LayoutTransform>
+                    </Image>
+                    <Slider Value="{Binding Scale, Mode=TwoWay}" 
+                Minimum="0.1" Maximum="2"
+                HorizontalAlignment="Center" VerticalAlignment="Bottom" 
+                Width="200"/>
                 </Grid>
-
+                
                 <Grid Grid.Column="1" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"></RowDefinition>
@@ -70,25 +73,21 @@
                                 <ColumnDefinition Width="1*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <Grid Grid.Column="0">
-                                <Button Content="Image Load" Background="#2E3347" Margin="10,10,10,10" Foreground="White" FontSize="15" BorderBrush="{x:Null}" Command="{Binding ImageLoad}">
-                                    <Button.Resources>
-                                        <Style TargetType="Border">
-                                            <Setter Property="CornerRadius" Value="5"/>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
-                            </Grid>
+                            <Button  Grid.Column="0" Content="Image Load" Background="#2E3347" Margin="10,10,10,10" Foreground="White" FontSize="15" BorderBrush="{x:Null}" Command="{Binding ImageLoad}">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="5"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
 
-                            <Grid Grid.Column="1">
-                                <Button Content="Image Save" Background="#2E3347" Margin="10,10,10,10" Foreground="White" FontSize="15" BorderBrush="{x:Null}" Command="{Binding ImagSave}">
-                                    <Button.Resources>
-                                        <Style TargetType="Border">
-                                            <Setter Property="CornerRadius" Value="5"/>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
-                            </Grid>
+                            <Button Grid.Column="1" Content="Image Save" Background="#2E3347" Margin="10,10,10,10" Foreground="White" FontSize="15" BorderBrush="{x:Null}" Command="{Binding ImageSave}">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="5"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
                             
                         </Grid>
 
@@ -100,15 +99,13 @@
                                 <ColumnDefinition Width="1*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <Grid Grid.Row="0">
-                                <Button Content="Start" Background="#2E3347" Margin="10,10,10,10" Foreground="White" FontSize="15" BorderBrush="{x:Null}" Command="{Binding Start}">
-                                    <Button.Resources>
-                                        <Style TargetType="Border">
-                                            <Setter Property="CornerRadius" Value="5"/>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
-                            </Grid>
+                            <Button Grid.Row="0" Content="Start" Background="#2E3347" Margin="10,10,10,10" Foreground="White" FontSize="15" BorderBrush="{x:Null}" Command="{Binding Start}">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="5"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
                         </Grid>
 
                         
@@ -119,27 +116,23 @@
                             </Grid.ColumnDefinitions>
 
                             <!-- Image Change -->
-                            <Grid Grid.Column="0">
-                                <Button Content="Image Change" Background="#2E3347" Margin="10,10,10,10" Foreground="White" FontSize="15" BorderBrush="{x:Null}" Command="{Binding ImageChange}">
-                                    <Button.Resources>
-                                        <Style TargetType="Border">
-                                            <Setter Property="CornerRadius" Value="5"/>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
-                            </Grid>
+                            <Button Grid.Column="0" Content="Image Change" Background="#2E3347" Margin="10,10,10,10" Foreground="White" FontSize="15" BorderBrush="{x:Null}" Command="{Binding ImageChange}">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="5"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
 
                             <!-- ComboBox -->
-                            <Grid Grid.Column="1">
-                                <ComboBox Name="ImageFilter" Margin="10,30,50,30" Background="#FF2E3347">
-                                    <ComboBox.Resources>
-                                        <Style TargetType="ComboBox">
-                                            <Setter Property="Background" Value="#2E3347"/>
-                                            <Setter Property="Foreground" Value="White"/>
-                                        </Style>
-                                    </ComboBox.Resources>
-                                </ComboBox>
-                            </Grid>
+                            <ComboBox Grid.Column="1"  Name="ImageFilter" Margin="10,30,50,30" Background="#FF2E3347">
+                                <ComboBox.Resources>
+                                    <Style TargetType="ComboBox">
+                                        <Setter Property="Background" Value="#2E3347"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Style>
+                                </ComboBox.Resources>
+                            </ComboBox>
                         </Grid>
 
                         <Grid Grid.Row="3">
@@ -155,14 +148,9 @@
                                 <ColumnDefinition Width="1*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <Grid Grid.Row="0" Grid.Column="0">
-                                <TextBlock Text="Threshold Value : " FontSize="20" Foreground="White" TextAlignment="Center" Margin="0,10,0,0"></TextBlock>
-                            </Grid>
-                                
-                            <Grid Grid.Row="0" Grid.Column="1">
-                                <TextBox Text="{Binding Threshold, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Foreground="White" TextAlignment="Center" Margin="0,10,0,10" Background="#FF2E3347"></TextBox>
-                            </Grid>
-
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Threshold Value : " FontSize="20" Foreground="White" TextAlignment="Center" Margin="0,10,0,0"></TextBlock>
+                            
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Threshold, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Foreground="White" TextAlignment="Center" Margin="0,10,0,10" Background="#FF2E3347"></TextBox>
 
                         </Grid>
                     </Grid>
@@ -173,57 +161,58 @@
                             <ColumnDefinition Width="1*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
-                        <Grid Grid.Column="0">
-                            <ItemsControl Margin="5,5,5,5" Background="#303030"></ItemsControl>
-                        </Grid>
-
-                        <Grid Grid.Column="1">
-                            <ListView Margin="5,5,5,5" Background="#FF2E3347" >
-                                <ListView.View>
-                                    <GridView>
-                                        <GridViewColumn Header="Index" Width="100" DisplayMemberBinding="{Binding Date}">
-                                            <GridViewColumn.HeaderContainerStyle>
-                                                <Style TargetType="GridViewColumnHeader">
-                                                    <Setter Property="Background" Value="#FF2E3347"/>
-                                                    <Setter Property="Foreground" Value="White"/>
-                                                </Style>
-                                            </GridViewColumn.HeaderContainerStyle>
-                                        </GridViewColumn>
-
-                                        <GridViewColumn Header="Result" Width="100" DisplayMemberBinding="{Binding Date}">
-                                            <GridViewColumn.HeaderContainerStyle>
-                                                <Style TargetType="GridViewColumnHeader">
-                                                    <Setter Property="Background" Value="#FF2E3347"/>
-                                                    <Setter Property="Foreground" Value="White"/>
-                                                </Style>
-                                            </GridViewColumn.HeaderContainerStyle>
-                                        </GridViewColumn>
-
-                                        <GridViewColumn Header="PosX" Width="100" DisplayMemberBinding="{Binding Date}">
-                                            <GridViewColumn.HeaderContainerStyle>
-                                                <Style TargetType="GridViewColumnHeader">
-                                                    <Setter Property="Background" Value="#FF2E3347"/>
-                                                    <Setter Property="Foreground" Value="White"/>
-                                                </Style>
-                                            </GridViewColumn.HeaderContainerStyle>
-                                        </GridViewColumn>
-
-                                        <GridViewColumn Header="PosY" Width="100" DisplayMemberBinding="{Binding Date}">
-                                            <GridViewColumn.HeaderContainerStyle>
-                                                <Style TargetType="GridViewColumnHeader">
-                                                    <Setter Property="Background" Value="#FF2E3347"/>
-                                                    <Setter Property="Foreground" Value="White"/>
-                                                </Style>
-                                            </GridViewColumn.HeaderContainerStyle>
-                                        </GridViewColumn>
+                        <!--<ItemsControl Grid.Column="0" Margin="5,5,5,5" Background="#303030"></ItemsControl>-->
+                        <Border Grid.Column="0" Background="#303030" BorderThickness="1">
+                            <Image Source="{Binding SubImage ,UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding ImageClickCommand}"/>
+                                </Image.InputBindings>
+                            </Image>
+                        </Border>
 
 
-                                    </GridView>
-                                </ListView.View>
-                            </ListView>
-                        </Grid>
+                        <ListView Grid.Column="1" Margin="5,5,5,5" Background="#FF2E3347" >
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Index" Width="100" DisplayMemberBinding="{Binding Date}">
+                                        <GridViewColumn.HeaderContainerStyle>
+                                            <Style TargetType="GridViewColumnHeader">
+                                                <Setter Property="Background" Value="#FF2E3347"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Style>
+                                        </GridViewColumn.HeaderContainerStyle>
+                                    </GridViewColumn>
 
+                                    <GridViewColumn Header="Result" Width="100" DisplayMemberBinding="{Binding Date}">
+                                        <GridViewColumn.HeaderContainerStyle>
+                                            <Style TargetType="GridViewColumnHeader">
+                                                <Setter Property="Background" Value="#FF2E3347"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Style>
+                                        </GridViewColumn.HeaderContainerStyle>
+                                    </GridViewColumn>
 
+                                    <GridViewColumn Header="PosX" Width="100" DisplayMemberBinding="{Binding Date}">
+                                        <GridViewColumn.HeaderContainerStyle>
+                                            <Style TargetType="GridViewColumnHeader">
+                                                <Setter Property="Background" Value="#FF2E3347"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Style>
+                                        </GridViewColumn.HeaderContainerStyle>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn Header="PosY" Width="100" DisplayMemberBinding="{Binding Date}">
+                                        <GridViewColumn.HeaderContainerStyle>
+                                            <Style TargetType="GridViewColumnHeader">
+                                                <Setter Property="Background" Value="#FF2E3347"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Style>
+                                        </GridViewColumn.HeaderContainerStyle>
+                                    </GridViewColumn>
+                                    
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
                     </Grid>
                 </Grid>
 
@@ -244,36 +233,30 @@
                     <ColumnDefinition Width="1*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <Grid Grid.Column="0">
-                    <Button Content="Fit" Background="#2E3347" Margin="10,10,10,10" Foreground="White" FontSize="15" BorderBrush="{x:Null}">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
-                </Grid>
 
-                <Grid Grid.Column="1">
-                    <Button Content="Zoom In" Background="#2E3347" Margin="10,10,10,10" Foreground="White" FontSize="15" BorderBrush="{x:Null}">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
-                </Grid>
+                <Button  Grid.Column="0" Content="Fit" Background="#2E3347" Margin="10,10,10,10" Foreground="White" FontSize="15" BorderBrush="{x:Null}" Command="{Binding ImageFit}">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
 
-                <Grid Grid.Column="2">
-                    <Button Content="Zoom Out" Background="#2E3347" Margin="10,10,10,10" Foreground="White" FontSize="15" BorderBrush="{x:Null}">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
-                </Grid>
+                <Button Grid.Column="1" Content="Zoom In" Background="#2E3347" Margin="10,10,10,10" Foreground="White" FontSize="15" BorderBrush="{x:Null}" Command="{Binding ImageZoomIn}">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
 
+                <Button Grid.Column="2" Content="Zoom Out" Background="#2E3347" Margin="10,10,10,10" Foreground="White" FontSize="15" BorderBrush="{x:Null}" Command="{Binding ImageZoomOut}">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
 
             </Grid>
             
@@ -284,9 +267,7 @@
                     <RowDefinition Height="1*"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="1">
-                    <TextBlock Text = "{Binding Version}" Foreground="White" TextAlignment="Center" FontSize="20"/>
-                </Grid>
+                <TextBlock Grid.Row="1" Text = "{Binding Version}" Foreground="White" TextAlignment="Center" FontSize="20"/>
             </Grid>
             
         </Grid>

@@ -1,49 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ImageViewer.CommonDefine;
 using System.Windows.Input;
-using System.Collections.ObjectModel;
-using GalaSoft.MvvmLight.Command;
-using System.Windows;
 using ImageViewer.MainSystem;
-using DevExpress.Xpo.DB.Helpers;
-using DevExpress.Xpo;
+using ImageViewer.Command;
+using System.Windows.Media;
+using System.Drawing;
+using System.Windows.Media.Imaging;
+
+using System.IO;
+using System.Windows.Media.Media3D;
+using System.Drawing.Imaging;
+using System.Windows.Controls;
+using OpenCvSharp;
+using DevExpress.Utils.Svg;
 
 namespace ImageViewer.ViewModel
 {
-    class MainViewModel : INotifyPropertyChanged, ICommand
+    public class MainViewModel : ViewModelBase
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
+        private SystemInfo _systeminfo;
+      
         public event EventHandler? CanExecuteChanged;
 
-        private void OnPropertyChanged(string propertyName)
+        public MainViewModel(SystemInfo systemInfo) 
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            _systeminfo = systemInfo;
+             Version = CommonDefine.CommonDefine.Version;
+
+            string imagePath = "E:\\5. Project_Test\\3. WPF_ImageViewer\\ImageViewer\\8666420.jpg"; // 이미지 파일 경로 지정
+            // BitmapSource를 만듭니다.
+
+            MainImage = Imgload(imagePath);
+            SubImage = Imgload(imagePath);
+            CreateCommands();
         }
 
-        public bool CanExecute(object? parameter)
+        private BitmapImage Imgload(string strpath)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                FileInfo fio = new FileInfo(strpath);
+                if (fio.Exists)
+                {
+                    BitmapImage img = new BitmapImage();
 
-        public void Execute(object? parameter)
-        {
-            throw new NotImplementedException();
-        }
+                    img.BeginInit();
+                    img.CacheOption = BitmapCacheOption.OnLoad;
+                    img.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                    
+                    img.UriSource = new Uri(strpath, UriKind.RelativeOrAbsolute);
+                    img.EndInit();
 
-        public MainViewModel() 
-        {
-            Version = CommonDefine.CommonDefine.Version;
-            _systemInfo = new SystemInfo();
-            _systemInfo.GetViewModel(this);
-        }
+                    if (img.CanFreeze) img.Freeze();
 
-        SystemInfo _systemInfo;
+                    return img;
+                }
+                else
+                    return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         string _version;
         public string Version 
@@ -73,45 +93,103 @@ namespace ImageViewer.ViewModel
             }
         }
 
-        ICommand _ImageLoad;
-        public ICommand ImageLoad
+        int _mainWidth;
+        public int MainWidth { get { return _mainWidth; }}
+
+        int _mainHeight;
+        public int MainHeight { get { return _mainHeight; } }
+
+        BitmapImage _mainImage;
+        public BitmapImage MainImage 
         {
-            get
+            get => _mainImage;
+            set 
             {
-                if (_ImageLoad == null)
-                    _ImageLoad = new RelayCommand(TEST);
-                return _ImageLoad;
+                if (_mainImage != value)
+                {
+                    _mainImage = value;
+                    OnPropertyChanged(nameof(MainImage));
+                }
             }
         }
 
-        void TEST() 
+        ImageSource _subImage;
+        public ImageSource SubImage
         {
-            int a = _threshold;
-            int b = _threshold;
+            get => _subImage;
+            set
+            {
+                if (_subImage != value)
+                {
+                    _subImage = value;
+                    OnPropertyChanged(nameof(SubImage));
+                }
+            }
         }
+
+        private void UpdateCenterPoint()
+        {
+            CenterPoint = new System.Drawing.Point((int)(_mainImage.PixelHeight* Scale / 2.0), (int)(_mainImage.PixelWidth * Scale / 2.0));
+        }
+
+        private System.Drawing.Point _centerPoint;
+        public System.Drawing.Point CenterPoint
+        {
+            get { return _centerPoint; }
+            set
+            {
+                _centerPoint = value;
+                OnPropertyChanged(nameof(CenterPoint));
+            }
+        }
+
+        double _scale = 1.0;
+        public double Scale 
+        {
+            get => _scale;
+            set
+            {
+                if (_scale != value)
+                {
+                    _scale = value;
+                    UpdateCenterPoint();
+                    OnPropertyChanged(nameof(Scale));
+                }
+            }
+        }
+
+        ICommand _ImageLoad;
+        public ICommand ImageLoad { get; set; }
 
         ICommand _ImageSave;
-        public ICommand ImagSave
+        public ICommand ImageSave { get; set; }
+
+        ICommand _ImageChange;
+        public ICommand ImageChange { get; set; }
+
+        ICommand _Start;
+        public ICommand Start { get; set; }
+
+        ICommand _ImageFit;
+        public ICommand ImageFit { get; set; }
+
+        ICommand _ImageZoomIn; 
+        public ICommand ImageZoomIn { get; set; }
+
+        ICommand _ImageZoomOut;
+        public ICommand ImageZoomOut { get; set; }
+
+
+        void CreateCommands() 
         {
-            get
-            {
-                if (_ImageSave == null)
-                    _ImageSave = new RelayCommand(_systemInfo.TESTViewmodel);
-                return _ImageSave;
-            }
+            ImageLoad = new CommandsImageLoad(_systeminfo);
+            ImageSave = new CommandsImageSave(_systeminfo);
+            ImageChange = new CommandsImageChange(_systeminfo);
+            Start = new CommandsStart(_systeminfo);
+            ImageFit = new CommandsImageFit(_systeminfo);
+            ImageZoomIn = new CommandsImageZoomIn(_systeminfo);
+            ImageZoomOut = new CommandsImageZoomOut(_systeminfo);
         }
-        //ICommand _ImageChange;
-        //public ICommand ImageChange
-        //{
-        //    get
-        //    {
-        //        if (_ImageChange == null)
-        //            _ImageChange = new RelayCommand();
-        //        return _ImageChange;
-        //    }
-        //}
-
-
 
     }
 }

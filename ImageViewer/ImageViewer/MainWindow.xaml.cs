@@ -10,6 +10,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ImageViewer.ViewModel;
 using ImageViewer.Model;
+using System.Windows.Media.Animation;
 
 namespace ImageViewer
 {
@@ -23,13 +24,6 @@ namespace ImageViewer
         public MainWindow()
         {
             InitializeComponent();
-            _mainViewModel = new MainViewModel();
-            this.DataContext = _mainViewModel;
         }
-
-
-
-
-
     }
 }
