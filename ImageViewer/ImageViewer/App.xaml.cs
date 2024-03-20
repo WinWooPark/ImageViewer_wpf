@@ -1,4 +1,4 @@
-﻿using ImageViewer.MainSystem;
+﻿using ImageViewer.Model.MainSystem;
 using ImageViewer.ViewModel;
 using System.Configuration;
 using System.Data;
@@ -16,23 +16,19 @@ namespace ImageViewer
     {
         private SystemInfo _systemInfo;
         private MainViewModel _mainViewModel;
+
         public App()
         {
-            //여기에다 모델 생성
             _systemInfo = new SystemInfo();
+            _mainViewModel = new MainViewModel(_systemInfo);
         }
         protected override void OnStartup(StartupEventArgs e) 
         {
-            _mainViewModel = new MainViewModel(_systemInfo);
-
             MainWindow = new MainWindow()
             {
                 DataContext = _mainViewModel
             };
             MainWindow.Show();
-
-            _systemInfo.SetViewModel(_mainViewModel);
-
             base.OnStartup(e);
         }
     }

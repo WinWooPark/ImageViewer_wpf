@@ -3,10 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ImageViewer"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:wheelTest ="clr-namespace:ImageViewer.Command"
+        xmlns:local="clr-namespace:ImageViewer" 
         mc:Ignorable="d"
         Background="#FF1C2135"
-        Title="ImageViewer" Height="1050" Width="1680">
+        Title="ImageViewer" Height="1050" Width="1680"
+        >
 
     <Grid>
         <Grid.RowDefinitions>
@@ -42,15 +45,15 @@
                 <Grid  Grid.Column="0" Background="#303030" Margin="5,5,5,5">
                     <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="None">
                         <Image.LayoutTransform>
-                            <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" CenterX="{Binding CenterPoint.X}" CenterY="{Binding CenterPoint.Y}"/>
+                            <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}"/>
                         </Image.LayoutTransform>
                     </Image>
-                    <Slider Value="{Binding Scale, Mode=TwoWay}" 
-                Minimum="0.1" Maximum="2"
-                HorizontalAlignment="Center" VerticalAlignment="Bottom" 
-                Width="200"/>
+                    
+                    <Slider Value="{Binding Scale, Mode=TwoWay}" Minimum="0.1" Maximum="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="200"/>
+                    
                 </Grid>
-                
+
+
                 <Grid Grid.Column="1" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"></RowDefinition>
@@ -125,11 +128,12 @@
                             </Button>
 
                             <!-- ComboBox -->
-                            <ComboBox Grid.Column="1"  Name="ImageFilter" Margin="10,30,50,30" Background="#FF2E3347">
+                            <ComboBox Grid.Column="1"  Name="ImageFilter" Margin="10,30,50,30" Background="#FF2E3347" ItemsSource="{Binding ComdoItems}" SelectedItem ="{Binding SelectedItem}" HorizontalContentAlignment="Center">
                                 <ComboBox.Resources>
                                     <Style TargetType="ComboBox">
                                         <Setter Property="Background" Value="#2E3347"/>
-                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="Foreground" Value="Black"/>
+                                        <Setter Property="FontSize" Value="25"/>
                                     </Style>
                                 </ComboBox.Resources>
                             </ComboBox>

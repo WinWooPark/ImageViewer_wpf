@@ -1,16 +1,17 @@
-﻿using ImageViewer.MainSystem;
+﻿using ImageViewer.Model.MainSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace ImageViewer.Command
 {
     public class CommandsImageLoad : CommandBase
     {
         private SystemInfo _systemInfo;
-        public CommandsImageLoad(ImageViewer.MainSystem.SystemInfo systemInfo)
+        public CommandsImageLoad(SystemInfo systemInfo)
         {
             _systemInfo = systemInfo;
         }
@@ -23,7 +24,7 @@ namespace ImageViewer.Command
     public class CommandsImageSave : CommandBase
     {
         private SystemInfo _systemInfo;
-        public CommandsImageSave(ImageViewer.MainSystem.SystemInfo systemInfo)
+        public CommandsImageSave(SystemInfo systemInfo)
         {
             _systemInfo = systemInfo;
         }
@@ -36,7 +37,7 @@ namespace ImageViewer.Command
     public class CommandsImageChange : CommandBase
     {
         private SystemInfo _systemInfo;
-        public CommandsImageChange(ImageViewer.MainSystem.SystemInfo systemInfo)
+        public CommandsImageChange(SystemInfo systemInfo)
         {
             _systemInfo = systemInfo;
         }
@@ -48,7 +49,7 @@ namespace ImageViewer.Command
     public class CommandsStart : CommandBase
     {
         private SystemInfo _systemInfo;
-        public CommandsStart(ImageViewer.MainSystem.SystemInfo systemInfo)
+        public CommandsStart(SystemInfo systemInfo)
         {
             _systemInfo = systemInfo;
         }
@@ -61,7 +62,7 @@ namespace ImageViewer.Command
     public class CommandsImageFit : CommandBase
     {
         private SystemInfo _systemInfo;
-        public CommandsImageFit(ImageViewer.MainSystem.SystemInfo systemInfo)
+        public CommandsImageFit(SystemInfo systemInfo)
         {
             _systemInfo = systemInfo;
         }
@@ -74,7 +75,7 @@ namespace ImageViewer.Command
     public class CommandsImageZoomIn : CommandBase
     {
         private SystemInfo _systemInfo;
-        public CommandsImageZoomIn(ImageViewer.MainSystem.SystemInfo systemInfo)
+        public CommandsImageZoomIn(SystemInfo systemInfo)
         {
             _systemInfo = systemInfo;
         }
@@ -87,7 +88,7 @@ namespace ImageViewer.Command
     public class CommandsImageZoomOut : CommandBase
     {
         private SystemInfo _systemInfo;
-        public CommandsImageZoomOut(ImageViewer.MainSystem.SystemInfo systemInfo)
+        public CommandsImageZoomOut(SystemInfo systemInfo)
         {
             _systemInfo = systemInfo;
         }

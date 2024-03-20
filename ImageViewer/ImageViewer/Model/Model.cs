@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ImageViewer.Model
 {
-    class Model
+    public class Model
     {
+        public Model() { }  
     }
 }

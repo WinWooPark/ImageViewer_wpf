@@ -8,7 +8,7 @@ namespace ImageViewer.CommonDefine
 {
     static public class CommonDefine
     {
-        public const string Version = "Ver 0.0.1";
+        public const string Version = "0.0.1";
     }
 
     

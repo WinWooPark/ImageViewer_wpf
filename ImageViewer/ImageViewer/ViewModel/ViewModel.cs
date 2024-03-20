@@ -1,19 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Input;
-using ImageViewer.MainSystem;
+using ImageViewer.Model.MainSystem;
 using ImageViewer.Command;
 using System.Windows.Media;
-using System.Drawing;
 using System.Windows.Media.Imaging;
-
 using System.IO;
-using System.Windows.Media.Media3D;
-using System.Drawing.Imaging;
-using System.Windows.Controls;
+using CommunityToolkit.Mvvm.Input;
+using System.Windows;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Reflection.Metadata;
 using OpenCvSharp;
-using DevExpress.Utils.Svg;
+using OpenCvSharp.WpfExtensions;
+using System.Collections.ObjectModel;
+
+
 
 namespace ImageViewer.ViewModel
 {
@@ -23,46 +24,32 @@ namespace ImageViewer.ViewModel
       
         public event EventHandler? CanExecuteChanged;
 
+        public MainViewModel()
+        {
+             
+        }
         public MainViewModel(SystemInfo systemInfo) 
         {
             _systeminfo = systemInfo;
-             Version = CommonDefine.CommonDefine.Version;
+            _systeminfo.SetImageUpdateCallBack(UpdateImage);
 
-            string imagePath = "E:\\5. Project_Test\\3. WPF_ImageViewer\\ImageViewer\\8666420.jpg"; // 이미지 파일 경로 지정
-            // BitmapSource를 만듭니다.
+            Version = string.Format("Var : {0}", CommonDefine.CommonDefine.Version);
 
-            MainImage = Imgload(imagePath);
-            SubImage = Imgload(imagePath);
+
+            _comdoItems = new ObservableCollection<string>
+            {
+                "Original",
+                "Gaussian Filter",
+                "Threshold",
+                "Bolb"
+            };
+
             CreateCommands();
         }
 
-        private BitmapImage Imgload(string strpath)
+        void UpdateImage(BitmapSource bitmapSource) 
         {
-            try
-            {
-                FileInfo fio = new FileInfo(strpath);
-                if (fio.Exists)
-                {
-                    BitmapImage img = new BitmapImage();
-
-                    img.BeginInit();
-                    img.CacheOption = BitmapCacheOption.OnLoad;
-                    img.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                    
-                    img.UriSource = new Uri(strpath, UriKind.RelativeOrAbsolute);
-                    img.EndInit();
-
-                    if (img.CanFreeze) img.Freeze();
-
-                    return img;
-                }
-                else
-                    return null;
-            }
-            catch
-            {
-                return null;
-            }
+            MainImage = bitmapSource;
         }
 
         string _version;
@@ -99,8 +86,8 @@ namespace ImageViewer.ViewModel
         int _mainHeight;
         public int MainHeight { get { return _mainHeight; } }
 
-        BitmapImage _mainImage;
-        public BitmapImage MainImage 
+        ImageSource _mainImage;
+        public ImageSource MainImage 
         {
             get => _mainImage;
             set 
@@ -127,22 +114,6 @@ namespace ImageViewer.ViewModel
             }
         }
 
-        private void UpdateCenterPoint()
-        {
-            CenterPoint = new System.Drawing.Point((int)(_mainImage.PixelHeight* Scale / 2.0), (int)(_mainImage.PixelWidth * Scale / 2.0));
-        }
-
-        private System.Drawing.Point _centerPoint;
-        public System.Drawing.Point CenterPoint
-        {
-            get { return _centerPoint; }
-            set
-            {
-                _centerPoint = value;
-                OnPropertyChanged(nameof(CenterPoint));
-            }
-        }
-
         double _scale = 1.0;
         public double Scale 
         {
@@ -152,8 +123,36 @@ namespace ImageViewer.ViewModel
                 if (_scale != value)
                 {
                     _scale = value;
-                    UpdateCenterPoint();
                     OnPropertyChanged(nameof(Scale));
+                }
+            }
+        }
+
+        private ObservableCollection<string> _comdoItems;
+        public ObservableCollection<string> ComdoItems
+        {
+            get { return _comdoItems; }
+            set
+            {
+                if (_comdoItems != value)
+                {
+                    _comdoItems = value;
+                    OnPropertyChanged(nameof(ComdoItems));
+                }
+            }
+                
+        }
+
+        private string _selectedItem;
+        public string SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                if (_selectedItem != value)
+                {
+                    _selectedItem = value;
+                    OnPropertyChanged(nameof(SelectedItem));
                 }
             }
         }
@@ -178,7 +177,6 @@ namespace ImageViewer.ViewModel
 
         ICommand _ImageZoomOut;
         public ICommand ImageZoomOut { get; set; }
-
 
         void CreateCommands() 
         {
