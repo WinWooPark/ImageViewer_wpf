@@ -30,7 +30,7 @@ namespace ImageViewer.Command
         }
         public override void Execute(object? parameter)
         {
-            _systemInfo.ImageSave("E:\\5. Project_Test\\3. WPF_ImageViewer\\ImageViewer\\TEST.bmp");
+            _systemInfo.ImageSave();
         }
     }
 
@@ -55,7 +55,7 @@ namespace ImageViewer.Command
         }
         public override void Execute(object? parameter)
         {
-            _systemInfo.ImageRoad();
+            _systemInfo.StartInspction();
         }
     }
 
@@ -97,4 +97,17 @@ namespace ImageViewer.Command
             _systemInfo.ZoomOut();
         }
     }
+
+    //public class CommandsMouseDrag : GenericCommandBase<MouseButtonEventArgs>
+    //{
+    //    private SystemInfo _systemInfo;
+    //    public CommandsMouseDrag(SystemInfo systemInfo)
+    //    {
+    //        _systemInfo = systemInfo;
+    //    }
+    //    public override void Execute(object? parameter)
+    //    {
+            
+    //    }
+    //}
 }

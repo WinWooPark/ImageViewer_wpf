@@ -10,6 +10,4 @@ namespace ImageViewer.CommonDefine
     {
         public const string Version = "0.0.1";
     }
-
-    
 }

@@ -13,6 +13,7 @@ using System.Reflection.Metadata;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using System.Collections.ObjectModel;
+using ImageViewer.Behaviors;
 
 
 
@@ -35,6 +36,7 @@ namespace ImageViewer.ViewModel
 
             Version = string.Format("Var : {0}", CommonDefine.CommonDefine.Version);
 
+            
 
             _comdoItems = new ObservableCollection<string>
             {
@@ -79,12 +81,6 @@ namespace ImageViewer.ViewModel
                 }
             }
         }
-
-        int _mainWidth;
-        public int MainWidth { get { return _mainWidth; }}
-
-        int _mainHeight;
-        public int MainHeight { get { return _mainHeight; } }
 
         ImageSource _mainImage;
         public ImageSource MainImage 

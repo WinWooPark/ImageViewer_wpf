@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:wheelTest ="clr-namespace:ImageViewer.Command"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:mouseDrag="clr-namespace:ImageViewer.Behaviors" 
         xmlns:local="clr-namespace:ImageViewer" 
         mc:Ignorable="d"
         Background="#FF1C2135"
@@ -44,12 +45,15 @@
 
                 <Grid  Grid.Column="0" Background="#303030" Margin="5,5,5,5">
                     <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="None">
-                        <Image.LayoutTransform>
-                            <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}"/>
-                        </Image.LayoutTransform>
+                        <behaviors:Interaction.Behaviors>
+                            <mouseDrag:MouseDragBehavior ClickCommand="{Binding ClickCommand}"/>
+                        </behaviors:Interaction.Behaviors>
                     </Image>
                     
-                    <Slider Value="{Binding Scale, Mode=TwoWay}" Minimum="0.1" Maximum="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="200"/>
+
+                   
+                    
+                    <!--<Slider Value="{Binding Scale, Mode=TwoWay}" Minimum="0.1" Maximum="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="200"/>-->
                     
                 </Grid>
 

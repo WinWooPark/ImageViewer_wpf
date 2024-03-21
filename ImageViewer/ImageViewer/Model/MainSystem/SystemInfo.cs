@@ -9,8 +9,20 @@ namespace ImageViewer.Model.MainSystem
 {
     public class SystemInfo
     {
-        public SystemInfo(){}
+        ImageProcessor _instance;
         Mat _image;
+
+        public SystemInfo()
+        {
+            _instance = ImageProcessor.Instance;
+            _instance.InitImageProcessor();
+            _instance.SetCallBackFunc(CallBackImage);
+        }
+
+        ~SystemInfo() 
+        {
+            _instance.CloseImageProcessor();
+        }
 
         Action<BitmapSource> _ImageUpdateCallBack;
         public void SetImageUpdateCallBack(Action<BitmapSource> callBack) 
@@ -21,11 +33,6 @@ namespace ImageViewer.Model.MainSystem
         public BitmapSource MatToBitmapSource(Mat Image) 
         {
             return OpenCvSharp.WpfExtensions.BitmapSourceConverter.ToBitmapSource(Image);
-        }
-
-        public BitmapSource MatToBitmapSource()
-        {
-            return OpenCvSharp.WpfExtensions.BitmapSourceConverter.ToBitmapSource(_image);
         }
 
         public void ImageRoad() 
@@ -43,11 +50,33 @@ namespace ImageViewer.Model.MainSystem
             }
         }
 
-        public void ImageSave(string Path)
+        void CallBackImage(Mat Image) 
+        {
+            _image = Image;
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                _ImageUpdateCallBack(MatToBitmapSource(_image));
+            });
+        }
+
+        public void ImageSave()
         {
             if (_image.Empty()) return;
 
-            Cv2.ImWrite(Path, _image);
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.Title = "Save Image";
+            dlg.DefaultExt = "bmp";
+
+            dlg.FileName = "SaveImage";
+            dlg.Filter = "SaveImage (.bmp)|*.BMP";
+
+
+            if (dlg.ShowDialog() == true)
+            {
+                string Filename = dlg.FileName;
+
+                Cv2.ImWrite(Filename, _image);
+            }
         }
 
         public void UpdateImage() 
@@ -63,6 +92,12 @@ namespace ImageViewer.Model.MainSystem
         public void ZoomOut() 
         {
 
+        }
+
+        public void StartInspction() 
+        {
+            if(_image != null)
+                _instance.SetImageProcessorBuffer(_image);
         }
     }
 }
