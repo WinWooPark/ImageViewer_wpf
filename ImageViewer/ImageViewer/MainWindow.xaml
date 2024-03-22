@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:mouseDrag="clr-namespace:ImageViewer.Behaviors" 
+        xmlns:MouseEvent="clr-namespace:ImageViewer.Behaviors" 
+        WindowState="Maximized"
         xmlns:local="clr-namespace:ImageViewer" 
         mc:Ignorable="d"
         Background="#FF1C2135"
@@ -43,19 +44,29 @@
                     <ColumnDefinition Width="1*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <Grid  Grid.Column="0" Background="#303030" Margin="5,5,5,5">
-                    <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="None">
-                        <behaviors:Interaction.Behaviors>
-                            <mouseDrag:MouseDragBehavior ClickCommand="{Binding ClickCommand}"/>
-                        </behaviors:Interaction.Behaviors>
-                    </Image>
-                    
 
-                   
-                    
-                    <!--<Slider Value="{Binding Scale, Mode=TwoWay}" Minimum="0.1" Maximum="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="200"/>-->
-                    
+                <Grid  Grid.Column="0" Background="#303030" Margin="5,5,5,5">
+                    <Canvas Grid.Column="0" ClipToBounds="True" Background="#303030">
+                        <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="None" HorizontalAlignment="Center" Cursor="Hand">
+                            
+                            <Image.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" />
+                                    <TranslateTransform X="{Binding TranslateX}" Y="{Binding TranslateY}" />
+                                </TransformGroup>
+                            </Image.RenderTransform>
+                           
+                            <behaviors:Interaction.Behaviors>
+                                <MouseEvent:MouseEventBehavior/>
+                            </behaviors:Interaction.Behaviors>
+                            
+                        </Image>
+                        <Ellipse Stroke="Red" StrokeThickness ="2"  Width="10" Height="10" Canvas.Left="100" Canvas.Top="100"/>
+                        <Ellipse Stroke="Red" StrokeThickness ="2"  Width="{Binding Radius}" Height="{Binding Radius}" Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}"/>
+                    </Canvas>
                 </Grid>
+            <!--<Slider Value="{Binding Scale, Mode=TwoWay}" Minimum="0.1" Maximum="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="200"/>-->
+                
 
 
                 <Grid Grid.Column="1" >
@@ -179,10 +190,10 @@
                         </Border>
 
 
-                        <ListView Grid.Column="1" Margin="5,5,5,5" Background="#FF2E3347" >
+                        <ListView Grid.Column="1" Margin="5,5,5,5" Background="#FF2E3347" ItemsSource="{Binding BlobData}">
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="Index" Width="100" DisplayMemberBinding="{Binding Date}">
+                                    <GridViewColumn Header="Index" Width="100" DisplayMemberBinding="{Binding Index}">
                                         <GridViewColumn.HeaderContainerStyle>
                                             <Style TargetType="GridViewColumnHeader">
                                                 <Setter Property="Background" Value="#FF2E3347"/>
@@ -191,7 +202,7 @@
                                         </GridViewColumn.HeaderContainerStyle>
                                     </GridViewColumn>
 
-                                    <GridViewColumn Header="Result" Width="100" DisplayMemberBinding="{Binding Date}">
+                                    <GridViewColumn Header="Result" Width="100" DisplayMemberBinding="{Binding Result}">
                                         <GridViewColumn.HeaderContainerStyle>
                                             <Style TargetType="GridViewColumnHeader">
                                                 <Setter Property="Background" Value="#FF2E3347"/>
@@ -200,7 +211,7 @@
                                         </GridViewColumn.HeaderContainerStyle>
                                     </GridViewColumn>
 
-                                    <GridViewColumn Header="PosX" Width="100" DisplayMemberBinding="{Binding Date}">
+                                    <GridViewColumn Header="PosX" Width="100" DisplayMemberBinding="{Binding CenterPointX}">
                                         <GridViewColumn.HeaderContainerStyle>
                                             <Style TargetType="GridViewColumnHeader">
                                                 <Setter Property="Background" Value="#FF2E3347"/>
@@ -209,7 +220,7 @@
                                         </GridViewColumn.HeaderContainerStyle>
                                     </GridViewColumn>
 
-                                    <GridViewColumn Header="PosY" Width="100" DisplayMemberBinding="{Binding Date}">
+                                    <GridViewColumn Header="PosY" Width="100" DisplayMemberBinding="{Binding CenterPointY}">
                                         <GridViewColumn.HeaderContainerStyle>
                                             <Style TargetType="GridViewColumnHeader">
                                                 <Setter Property="Background" Value="#FF2E3347"/>

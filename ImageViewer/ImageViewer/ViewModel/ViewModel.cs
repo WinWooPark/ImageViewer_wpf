@@ -14,8 +14,8 @@ using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using System.Collections.ObjectModel;
 using ImageViewer.Behaviors;
-
-
+using ImageViewer.Model;
+using System.Collections.Concurrent;
 
 namespace ImageViewer.ViewModel
 {
@@ -25,18 +25,9 @@ namespace ImageViewer.ViewModel
       
         public event EventHandler? CanExecuteChanged;
 
-        public MainViewModel()
+        public MainViewModel() 
         {
-             
-        }
-        public MainViewModel(SystemInfo systemInfo) 
-        {
-            _systeminfo = systemInfo;
-            _systeminfo.SetImageUpdateCallBack(UpdateImage);
-
             Version = string.Format("Var : {0}", CommonDefine.CommonDefine.Version);
-
-            
 
             _comdoItems = new ObservableCollection<string>
             {
@@ -45,11 +36,29 @@ namespace ImageViewer.ViewModel
                 "Threshold",
                 "Bolb"
             };
+            _circleRoi = new ObservableCollection<CircleModel>();
+            _blobData = new ObservableCollection<BlobData>();
+
+            _systeminfo = IntegratedClass.Instance.SystemInfo;
 
             CreateCommands();
         }
 
-        void UpdateImage(BitmapSource bitmapSource) 
+        public void UpdateUI() 
+        {
+            ConcurrentQueue<BlobData> blobDatas = IntegratedClass.Instance.GetBlobData();
+            int Length = blobDatas.Count;
+            
+            foreach (BlobData blobData in blobDatas)
+            {
+                BlobData.Add(blobData);
+                CircleRoi.Add(new CircleModel(blobData.CenterPointX, blobData.CenterPointY, blobData.Radius));
+            }
+
+            blobDatas.Clear();
+        }
+
+        public void UpdateImage(BitmapSource bitmapSource) 
         {
             MainImage = bitmapSource;
         }
@@ -68,59 +77,111 @@ namespace ImageViewer.ViewModel
             }
         }
 
-        int _threshold;
         public int Threshold 
         {
-            get { return _threshold; }
+            get { return IntegratedClass.Instance.Threshold; }
             set 
             {
-                if (_threshold != value)
+                if (IntegratedClass.Instance.Threshold != value)
                 {
-                    _threshold = value;
+                    IntegratedClass.Instance.Threshold = value;
                     OnPropertyChanged(nameof(Threshold));
                 }
             }
         }
 
-        ImageSource _mainImage;
         public ImageSource MainImage 
         {
-            get => _mainImage;
+            get => IntegratedClass.Instance.MainImage;
             set 
             {
-                if (_mainImage != value)
+                if (IntegratedClass.Instance.MainImage != value)
                 {
-                    _mainImage = value;
+                    IntegratedClass.Instance.MainImage = value;
                     OnPropertyChanged(nameof(MainImage));
                 }
             }
         }
 
-        ImageSource _subImage;
         public ImageSource SubImage
         {
-            get => _subImage;
+            get => IntegratedClass.Instance.SubImage;
             set
             {
-                if (_subImage != value)
+                if (IntegratedClass.Instance.SubImage != value)
                 {
-                    _subImage = value;
+                    IntegratedClass.Instance.SubImage = value;
                     OnPropertyChanged(nameof(SubImage));
                 }
             }
         }
 
-        double _scale = 1.0;
+        
         public double Scale 
         {
-            get => _scale;
+            get => IntegratedClass.Instance.Scale;
             set
             {
-                if (_scale != value)
+                if (IntegratedClass.Instance.Scale != value)
                 {
-                    _scale = value;
+                    IntegratedClass.Instance.Scale = value;
                     OnPropertyChanged(nameof(Scale));
                 }
+            }
+        }
+
+        
+        public double TranslateX
+        {
+            get { return IntegratedClass.Instance.TranslateX; }
+            set
+            { 
+                if (IntegratedClass.Instance.TranslateX != value)
+                {
+                    IntegratedClass.Instance.TranslateX = value;
+                    OnPropertyChanged(nameof(TranslateX));
+                }
+            }
+        }
+
+        
+        public double TranslateY
+        {
+            get { return IntegratedClass.Instance.TranslateY; }
+            set
+            {
+                if (IntegratedClass.Instance.TranslateY != value)
+                {
+                    IntegratedClass.Instance.TranslateY = value;
+                    OnPropertyChanged(nameof(TranslateY));
+                }
+            }
+        }
+
+        ObservableCollection<CircleModel>_circleRoi;
+        public ObservableCollection<CircleModel> CircleRoi 
+        {
+            get { return _circleRoi; }
+            set 
+            {
+                if (_circleRoi != value) 
+                {
+                    _circleRoi = value;
+                    OnPropertyChanged(nameof(CircleRoi));
+                }
+            }
+        }
+
+        private ObservableCollection<BlobData> _blobData;
+
+        public ObservableCollection<BlobData> BlobData
+        {
+            get { return _blobData; }
+            set
+            {
+                if (_blobData != value) { _blobData = value; }
+
+                OnPropertyChanged(nameof(_blobData));
             }
         }
 

@@ -43,7 +43,7 @@ namespace ImageViewer.Command
         }
         public override void Execute(object? parameter)
         {
-            _systemInfo.ImageRoad();
+            _systemInfo.ImageChage();
         }
     }
     public class CommandsStart : CommandBase
@@ -68,7 +68,7 @@ namespace ImageViewer.Command
         }
         public override void Execute(object? parameter)
         {
-            _systemInfo.ImageRoad();
+            _systemInfo.ZoomFit();
         }
     }
 
@@ -97,17 +97,4 @@ namespace ImageViewer.Command
             _systemInfo.ZoomOut();
         }
     }
-
-    //public class CommandsMouseDrag : GenericCommandBase<MouseButtonEventArgs>
-    //{
-    //    private SystemInfo _systemInfo;
-    //    public CommandsMouseDrag(SystemInfo systemInfo)
-    //    {
-    //        _systemInfo = systemInfo;
-    //    }
-    //    public override void Execute(object? parameter)
-    //    {
-            
-    //    }
-    //}
 }

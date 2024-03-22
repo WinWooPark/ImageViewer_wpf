@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using System.Windows.Media;
+using ImageViewer.Model;
 
 namespace ImageViewer
 {
@@ -20,7 +21,10 @@ namespace ImageViewer
         public App()
         {
             _systemInfo = new SystemInfo();
-            _mainViewModel = new MainViewModel(_systemInfo);
+            IntegratedClass.Instance.SystemInfo = _systemInfo;
+
+            _mainViewModel = new MainViewModel();
+            IntegratedClass.Instance.MainViewModel = _mainViewModel;
         }
         protected override void OnStartup(StartupEventArgs e) 
         {
@@ -30,6 +34,12 @@ namespace ImageViewer
             };
             MainWindow.Show();
             base.OnStartup(e);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            _systemInfo.CloseSystemInfo();
+            base.OnExit(e);
         }
     }
 

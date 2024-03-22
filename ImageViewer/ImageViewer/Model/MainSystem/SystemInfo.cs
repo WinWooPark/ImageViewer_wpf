@@ -16,23 +16,25 @@ namespace ImageViewer.Model.MainSystem
         {
             _instance = ImageProcessor.Instance;
             _instance.InitImageProcessor();
-            _instance.SetCallBackFunc(CallBackImage);
+
+            IntegratedClass.Instance.SystemInfo = this;
         }
 
         ~SystemInfo() 
         {
-            _instance.CloseImageProcessor();
+            
         }
 
-        Action<BitmapSource> _ImageUpdateCallBack;
-        public void SetImageUpdateCallBack(Action<BitmapSource> callBack) 
-        {
-            _ImageUpdateCallBack = callBack;
-        }
+    
 
         public BitmapSource MatToBitmapSource(Mat Image) 
         {
             return OpenCvSharp.WpfExtensions.BitmapSourceConverter.ToBitmapSource(Image);
+        }
+
+        public void CloseSystemInfo() 
+        {
+            _instance.CloseImageProcessor();
         }
 
         public void ImageRoad() 
@@ -45,20 +47,8 @@ namespace ImageViewer.Model.MainSystem
             if (dlg.ShowDialog() == true) 
             {
                 _image = Cv2.ImRead(dlg.FileName);
-
-                _ImageUpdateCallBack(MatToBitmapSource(_image));
             }
         }
-
-        void CallBackImage(Mat Image) 
-        {
-            _image = Image;
-            System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            {
-                _ImageUpdateCallBack(MatToBitmapSource(_image));
-            });
-        }
-
         public void ImageSave()
         {
             if (_image.Empty()) return;
@@ -79,10 +69,6 @@ namespace ImageViewer.Model.MainSystem
             }
         }
 
-        public void UpdateImage() 
-        {
-
-        }
 
         public void ZoomIn() 
         {
@@ -94,10 +80,22 @@ namespace ImageViewer.Model.MainSystem
 
         }
 
+        public void ZoomFit()
+        {
+            IntegratedClass.Instance.Scale = 0;
+            IntegratedClass.Instance.Scale = 0;
+            IntegratedClass.Instance.Scale = 0;
+        }
+
         public void StartInspction() 
         {
             if(_image != null)
                 _instance.SetImageProcessorBuffer(_image);
+        }
+
+        public void ImageChage() 
+        {
+
         }
     }
 }

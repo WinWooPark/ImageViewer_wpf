@@ -1,12 +1,8 @@
 ﻿using System;
 using OpenCvSharp;
-using System;
-using System.Numerics;
 
 namespace ImageViewer.Model.MainSystem
 {
-    
-
     public class ImageProcessor
     {
         static ImageProcessor _intance;
@@ -36,10 +32,6 @@ namespace ImageViewer.Model.MainSystem
         Mat _bilateral;
         Mat _Threshold;
         Mat _Bolb;
-        Mat _Result;
-
-        Action<Mat> _callBackFunc;
-        public void SetCallBackFunc(Action<Mat> CallBack) { _callBackFunc = CallBack; }
 
         public void InitImageProcessor() 
         {
@@ -60,31 +52,27 @@ namespace ImageViewer.Model.MainSystem
            if(_bilateral == null) _bilateral = new Mat();
            if(_Threshold == null) _Threshold = new Mat();
            if(_Bolb == null) _Bolb = new Mat();
-            if (_Result == null) _Result = new Mat();
         }
 
         public void CloseImageProcessor() 
         {
             _IsProcessorRun = false;
+            _AddItem.Set();
             _processor.Join();
 
-            if(_buffer != null) _buffer.Release();
+            if (_buffer != null) _buffer.Release();
             if (_bilateral != null) _bilateral.Release();
             if (_Threshold != null) _Threshold.Release();
             if (_Bolb != null) _Bolb.Release();
-            if (_Result != null) _Result.Release();
         }
         void Run() 
         {
             while(_IsProcessorRun == true)
             {
                 _AddItem.WaitOne();
-
-                if (_buffer == null) continue;
-
-                processDefect();
-
-
+                
+                if (!_buffer.Empty())
+                    processDefect();
             }
             return;
         }
@@ -98,8 +86,10 @@ namespace ImageViewer.Model.MainSystem
             //노이즈 제거
             Cv2.BilateralFilter(_buffer, _bilateral, 5, 250, 10); 
 
+            int nThreshold = IntegratedClass.Instance.Threshold;
+
             //객체 분리를 위해 Threshold
-            Cv2.Threshold(_bilateral, _Threshold, 150, 255, ThresholdTypes.Binary);
+            Cv2.Threshold(_bilateral, _Threshold, nThreshold, 255, ThresholdTypes.Binary);
 
             Point[][] contours;
             HierarchyIndex[] hierarchyIndex;
@@ -107,52 +97,52 @@ namespace ImageViewer.Model.MainSystem
             //Blob의 외곽선 추출
             Cv2.FindContours(_Threshold, out contours, out hierarchyIndex, RetrievalModes.External, ContourApproximationModes.ApproxNone);
 
-            List<CircleData> circleDatas = new List<CircleData>();
-
             Point[] CenterPoint = new Point[contours.Length];
 
-            Cv2.CvtColor(_buffer, _Result, ColorConversionCodes.GRAY2BGR);
-            for (int i = 0; i < contours.Length; ++i) 
+            for(int i = 0; i < contours.Length; ++i)
             {
-                int CoordiX = 0;
-                int CoordiY = 0;
-
-                for (int j = 0; j < contours[i].Length; ++j) 
-                {
-                    CoordiX += contours[i][j].X;
-                    CoordiY += contours[i][j].Y;
-
-                    Cv2.Circle(_Result, contours[i][j], 1, new Scalar(0, 255, 0), 1);
-                }
-                CenterPoint[i].X = CoordiX / contours[i].Length;
-                CenterPoint[i].Y = CoordiY / contours[i].Length;
-
-                CircleData circleData;
+                BlobData blobData = null;
 
                 //추출한 외곽선을 기준으로 circle Fitting
-                FittingCircle(contours[i], out circleData);
+                FittingCircle(contours[i], out blobData);
 
-                if (circleData == null) continue;
-                circleDatas.Add(circleData);
+                if (blobData != null)
+                {
+                    blobData.Index = i;
+                    blobData.Result = Judgement(blobData);
 
-                Cv2.Circle(_Result,(int)circleData.CenterPointX, (int)circleData.CenterPointY,
-                    (int)circleData.Radius, new Scalar(0, 0, 255), 1);
-
-                Cv2.Circle(_Result, new Point((int)circleData.CenterPointX, (int)circleData.CenterPointY), 1, new Scalar(0, 255,0), 5);
-
-                Cv2.Circle(_Result, CenterPoint[i], 1, new Scalar(0, 0, 255), 3);
+                    //데이터에 넣어둔다
+                    IntegratedClass.Instance.SetBlobData(blobData);
+                }
             }
 
-            _callBackFunc(_Result);
+            //Parallel.For(0, contours.Length,(i=>
+            //{
+            //    BlobData blobData = null;
+
+            //    //추출한 외곽선을 기준으로 circle Fitting
+            //    FittingCircle(contours[i], out blobData);
+
+            //    if (blobData != null) 
+            //    {
+            //        blobData.Index = i;
+            //        blobData.Result = Judgement(blobData);
+
+            //        //데이터에 넣어둔다
+            //        IntegratedClass.Instance.SetBlobData(blobData);
+            //    }
+            //}));
+
+            IntegratedClass.Instance.InspDoneFunc(_buffer);
         }
 
-        void FittingCircle(Point[] point, out CircleData circle) 
+        void FittingCircle(Point[] point, out BlobData blobData) 
         {
             int Length = point.Length;
 
             if (Length == 0)
             {
-                circle = null;
+                blobData = null;
                 return;
             }
             
@@ -175,12 +165,22 @@ namespace ImageViewer.Model.MainSystem
 
             Mat parameters = pseudoInverse * vecB;
 
-            circle = new CircleData();
-            circle.CenterPointX = parameters.At<double>(0, 0);
-            circle.CenterPointY = parameters.At<double>(0, 1);
-            circle.Radius = Math.Round(Math.Sqrt(Math.Pow(parameters.At<double>(0, 0), 2) + Math.Pow(parameters.At<double>(0, 1), 2) - parameters.At<double>(0, 2)),2);
+            blobData = new BlobData();
+            blobData.CenterPointX = parameters.At<double>(0, 0);
+            blobData.CenterPointY = parameters.At<double>(0, 1);
+            blobData.Radius = Math.Round(Math.Sqrt(Math.Pow(parameters.At<double>(0, 0), 2) + Math.Pow(parameters.At<double>(0, 1), 2) - parameters.At<double>(0, 2)),2);
 
             return;
+        }
+
+        bool Judgement(BlobData blobData) 
+        {
+            double reference = 300;//IntegratedClass.Instance.Reference;
+
+            //if (blobData.Width >= reference || blobData.Height >= reference) return false;
+
+            if(blobData.Radius > 300) return false;
+            else return true;
         }
 
         public void SetImageProcessorBuffer(Mat Buffer) 

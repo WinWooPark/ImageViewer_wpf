@@ -7,6 +7,10 @@
         <Style TargetType="Border">
             <Setter Property="CornerRadius" Value="5"/>
         </Style>
+        <Style TargetType="ListView">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
     </Application.Resources>
     
 </Application>
