@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using OpenCvSharp;
 
 namespace ImageViewer.Model.MainSystem
@@ -26,12 +27,16 @@ namespace ImageViewer.Model.MainSystem
         bool _IsProcessorRun = false;
         AutoResetEvent _AddItem;
 
+        bool _IsInspRun = false;
+
         object _bufferLocker;
 
         Mat _buffer;
         Mat _bilateral;
         Mat _Threshold;
         Mat _Bolb;
+        Mat _result;
+        public Mat Result { get { return _result; } }
 
         public void InitImageProcessor() 
         {
@@ -52,6 +57,7 @@ namespace ImageViewer.Model.MainSystem
            if(_bilateral == null) _bilateral = new Mat();
            if(_Threshold == null) _Threshold = new Mat();
            if(_Bolb == null) _Bolb = new Mat();
+           if (_result == null) _result = new Mat();
         }
 
         public void CloseImageProcessor() 
@@ -64,15 +70,22 @@ namespace ImageViewer.Model.MainSystem
             if (_bilateral != null) _bilateral.Release();
             if (_Threshold != null) _Threshold.Release();
             if (_Bolb != null) _Bolb.Release();
+            if (_result != null) _result.Release();
         }
         void Run() 
         {
             while(_IsProcessorRun == true)
             {
-                _AddItem.WaitOne();
-                
-                if (!_buffer.Empty())
-                    processDefect();
+
+                if (_IsInspRun == true)
+                {
+                    if (!_buffer.Empty())
+                        processDefect();
+
+                    _IsInspRun = false;
+                }
+                else  _AddItem.WaitOne();
+
             }
             return;
         }
@@ -99,7 +112,7 @@ namespace ImageViewer.Model.MainSystem
 
             Point[] CenterPoint = new Point[contours.Length];
 
-            for(int i = 0; i < contours.Length; ++i)
+            for (int i = 0; i < contours.Length; ++i)
             {
                 BlobData blobData = null;
 
@@ -116,14 +129,14 @@ namespace ImageViewer.Model.MainSystem
                 }
             }
 
-            //Parallel.For(0, contours.Length,(i=>
+            //Parallel.For(0, contours.Length, (i =>
             //{
             //    BlobData blobData = null;
 
             //    //추출한 외곽선을 기준으로 circle Fitting
             //    FittingCircle(contours[i], out blobData);
 
-            //    if (blobData != null) 
+            //    if (blobData != null)
             //    {
             //        blobData.Index = i;
             //        blobData.Result = Judgement(blobData);
@@ -133,7 +146,28 @@ namespace ImageViewer.Model.MainSystem
             //    }
             //}));
 
-            IntegratedClass.Instance.InspDoneFunc(_buffer);
+            DrawResult();
+
+            IntegratedClass.Instance.InspDoneFunc(_result);
+        }
+
+        void DrawResult()
+        {
+            Cv2.CvtColor(_buffer, _result, ColorConversionCodes.GRAY2BGR);
+            foreach (BlobData blobData in IntegratedClass.Instance.GetBlobData())
+            {
+                string Index = string.Format("{0}", blobData.Index);
+                Point org = new Point((int)blobData.CenterPointX + 5, (int)blobData.CenterPointY);
+                Cv2.PutText(_result, Index, org, HersheyFonts.HersheyPlain, 1, new Scalar(0, 0, 0), 1);
+
+                Cv2.Circle(_result, (int)blobData.CenterPointX, (int)blobData.CenterPointY, 1, new Scalar(0, 0, 0), 2);
+
+
+                if (blobData.Result == true)
+                    Cv2.Circle(_result, (int)blobData.CenterPointX, (int)blobData.CenterPointY, (int)blobData.Radius, new Scalar(0, 255, 0), 2);
+                else
+                    Cv2.Circle(_result, (int)blobData.CenterPointX, (int)blobData.CenterPointY, (int)blobData.Radius, new Scalar(0, 0, 255), 2);
+            }
         }
 
         void FittingCircle(Point[] point, out BlobData blobData) 
@@ -149,15 +183,26 @@ namespace ImageViewer.Model.MainSystem
             Mat MatA = new Mat(Length,3, MatType.CV_64F);
 
             Mat vecB = new Mat(Length,1, MatType.CV_64F);
+            
+            
 
-            for(int i = 0; i < Length; ++i)
+            for (int i = 0; i < Length; ++i)
             {
                 MatA.At<double>(i, 0) = -2 * point[i].X;
                 MatA.At<double>(i, 1) = -2 * point[i].Y;
                 MatA.At<double>(i, 2) = 1;
 
-                vecB.At<double>(i, 0) = - Math.Pow(point[i].X, 2) - Math.Pow(point[i].Y, 2);
+                vecB.At<double>(i, 0) = -Math.Pow(point[i].X, 2) - Math.Pow(point[i].Y, 2);
             }
+
+            //Parallel.For(0, Length, (i =>
+            //{
+            //    MatA.At<double>(i, 0) = -2 * point[i].X;
+            //    MatA.At<double>(i, 1) = -2 * point[i].Y;
+            //    MatA.At<double>(i, 2) = 1;
+
+            //    vecB.At<double>(i, 0) = -Math.Pow(point[i].X, 2) - Math.Pow(point[i].Y, 2);
+            //}));
 
             Mat pseudoInverse = new Mat();
 
@@ -169,17 +214,18 @@ namespace ImageViewer.Model.MainSystem
             blobData.CenterPointX = parameters.At<double>(0, 0);
             blobData.CenterPointY = parameters.At<double>(0, 1);
             blobData.Radius = Math.Round(Math.Sqrt(Math.Pow(parameters.At<double>(0, 0), 2) + Math.Pow(parameters.At<double>(0, 1), 2) - parameters.At<double>(0, 2)),2);
-
+            blobData.Width = blobData.Height =  blobData.Radius * 2;
             return;
         }
 
         bool Judgement(BlobData blobData) 
         {
-            double reference = 300;//IntegratedClass.Instance.Reference;
+            double reference = IntegratedClass.Instance.Reference;
 
             //if (blobData.Width >= reference || blobData.Height >= reference) return false;
+            if (blobData.Radius >= reference) return false;
 
-            if(blobData.Radius > 300) return false;
+            //if(blobData.Radius > 300) return false;
             else return true;
         }
 
@@ -188,8 +234,33 @@ namespace ImageViewer.Model.MainSystem
             lock (_bufferLocker)
             {
                 _buffer = Buffer;
+                _IsInspRun = true;
                 _AddItem.Set();
             }
+        }
+
+        public Mat SelectedImage(string str) 
+        {
+            Mat SelectImage = null;
+            switch (str) 
+            {
+                case "Original":
+                    SelectImage = _buffer;
+                    break;
+                case "Filter":
+                    SelectImage = _bilateral;
+                    break;
+                case "Threshold":
+                    SelectImage = _Threshold;
+                    break;
+                case "Bolb":
+                    SelectImage = _result;
+                    break;
+                default:
+                    SelectImage = _result;
+                    break;
+            }
+            return SelectImage;
         }
     }
 }

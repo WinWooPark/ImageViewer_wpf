@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:Blob="clr-namespace:ImageViewer.Model.MainSystem"
         xmlns:MouseEvent="clr-namespace:ImageViewer.Behaviors" 
         WindowState="Maximized"
         xmlns:local="clr-namespace:ImageViewer" 
@@ -45,29 +46,48 @@
                 </Grid.ColumnDefinitions>
 
 
-                <Grid  Grid.Column="0" Background="#303030" Margin="5,5,5,5">
-                    <Canvas Grid.Column="0" ClipToBounds="True" Background="#303030">
-                        <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="None" HorizontalAlignment="Center" Cursor="Hand">
-                            
+                <Grid  Grid.Column="0" Background="#303030" Margin="5,5,5,5" ClipToBounds="True">
+                    <!--<behaviors:Interaction.Behaviors>
+                        <MouseEvent:GirdSizeBehavior/>
+                    </behaviors:Interaction.Behaviors>-->
+                    <Border>
+                        <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" HorizontalAlignment="Center" AllowDrop="True" RenderOptions.BitmapScalingMode="Fant">
                             <Image.RenderTransform>
                                 <TransformGroup>
-                                    <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" />
+                                    <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" CenterX="{Binding CenterPointX}" CenterY="{Binding CenterPointY}"/>
                                     <TranslateTransform X="{Binding TranslateX}" Y="{Binding TranslateY}" />
                                 </TransformGroup>
                             </Image.RenderTransform>
-                           
+
                             <behaviors:Interaction.Behaviors>
                                 <MouseEvent:MouseEventBehavior/>
+                                <MouseEvent:GirdSizeBehavior/>
                             </behaviors:Interaction.Behaviors>
-                            
                         </Image>
-                        <Ellipse Stroke="Red" StrokeThickness ="2"  Width="10" Height="10" Canvas.Left="100" Canvas.Top="100"/>
-                        <Ellipse Stroke="Red" StrokeThickness ="2"  Width="{Binding Radius}" Height="{Binding Radius}" Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}"/>
-                    </Canvas>
-                </Grid>
-            <!--<Slider Value="{Binding Scale, Mode=TwoWay}" Minimum="0.1" Maximum="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="200"/>-->
-                
+                    </Border>
+                    
+                    <!--<Border>
+                        <ItemsControl ItemsSource="{Binding CircleData}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas ClipToBounds="True" IsHitTestVisible="False"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style>
+                                    <Setter Property="Canvas.Left" Value="{Binding CircleCenterX}"/>
+                                    <Setter Property="Canvas.Top" Value="{Binding CircleCenterY}"/>
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
 
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Ellipse Width="{Binding CircleRadius}" Height="{Binding CircleRadius}" Stroke="Red" StrokeThickness="1" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>-->
+                </Grid>
 
                 <Grid Grid.Column="1" >
                     <Grid.RowDefinitions>
@@ -171,6 +191,10 @@
                             
                             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Threshold, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Foreground="White" TextAlignment="Center" Margin="0,10,0,10" Background="#FF2E3347"></TextBox>
 
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Reference Value : " FontSize="20" Foreground="White" TextAlignment="Center" Margin="0,10,0,0"></TextBlock>
+
+                            <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding Reference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged ,StringFormat={}{0:0.###}}" FontSize="20" Foreground="White" TextAlignment="Center" Margin="0,10,0,10" Background="#FF2E3347"></TextBox>
+
                         </Grid>
                     </Grid>
 
@@ -182,15 +206,18 @@
 
                         <!--<ItemsControl Grid.Column="0" Margin="5,5,5,5" Background="#303030"></ItemsControl>-->
                         <Border Grid.Column="0" Background="#303030" BorderThickness="1">
-                            <Image Source="{Binding SubImage ,UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform">
-                                <Image.InputBindings>
-                                    <MouseBinding Gesture="LeftClick" Command="{Binding ImageClickCommand}"/>
-                                </Image.InputBindings>
-                            </Image>
+                            <Image Source="{Binding SubImage ,UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform"/>
                         </Border>
 
 
-                        <ListView Grid.Column="1" Margin="5,5,5,5" Background="#FF2E3347" ItemsSource="{Binding BlobData}">
+                        <ListView Grid.Column="1" Margin="5,5,5,5" Background="#FF2E3347" ItemsSource="{Binding BlobData}" SelectedItem="{Binding SelectedBlobItem}">
+                            
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDoubleClick">
+                                    <i:InvokeCommandAction Command="{Binding SelectedBlobItemCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="Index" Width="100" DisplayMemberBinding="{Binding Index}">
@@ -198,6 +225,7 @@
                                             <Style TargetType="GridViewColumnHeader">
                                                 <Setter Property="Background" Value="#FF2E3347"/>
                                                 <Setter Property="Foreground" Value="White"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                             </Style>
                                         </GridViewColumn.HeaderContainerStyle>
                                     </GridViewColumn>
@@ -207,24 +235,27 @@
                                             <Style TargetType="GridViewColumnHeader">
                                                 <Setter Property="Background" Value="#FF2E3347"/>
                                                 <Setter Property="Foreground" Value="White"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                             </Style>
                                         </GridViewColumn.HeaderContainerStyle>
                                     </GridViewColumn>
 
-                                    <GridViewColumn Header="PosX" Width="100" DisplayMemberBinding="{Binding CenterPointX}">
+                                    <GridViewColumn Header="PosX" Width="100"  DisplayMemberBinding="{Binding CenterPointX ,StringFormat={}{0:0.###}}">
                                         <GridViewColumn.HeaderContainerStyle>
                                             <Style TargetType="GridViewColumnHeader">
                                                 <Setter Property="Background" Value="#FF2E3347"/>
                                                 <Setter Property="Foreground" Value="White"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                             </Style>
                                         </GridViewColumn.HeaderContainerStyle>
                                     </GridViewColumn>
 
-                                    <GridViewColumn Header="PosY" Width="100" DisplayMemberBinding="{Binding CenterPointY}">
+                                    <GridViewColumn Header="PosY" Width="100" DisplayMemberBinding="{Binding CenterPointY , StringFormat={}{0:0.###}}">
                                         <GridViewColumn.HeaderContainerStyle>
                                             <Style TargetType="GridViewColumnHeader">
                                                 <Setter Property="Background" Value="#FF2E3347"/>
                                                 <Setter Property="Foreground" Value="White"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                             </Style>
                                         </GridViewColumn.HeaderContainerStyle>
                                     </GridViewColumn>

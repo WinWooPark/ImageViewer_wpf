@@ -97,4 +97,17 @@ namespace ImageViewer.Command
             _systemInfo.ZoomOut();
         }
     }
+
+    public class CommandsSelectedBlobItem : CommandBase
+    {
+        private SystemInfo _systemInfo;
+        public CommandsSelectedBlobItem(SystemInfo systemInfo)
+        {
+            _systemInfo = systemInfo;
+        }
+        public override void Execute(object? parameter)
+        {
+            _systemInfo.SelectedBlobItem();
+        }
+    }
 }

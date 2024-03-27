@@ -9,7 +9,6 @@ namespace ImageViewer
         public MainWindow()
         {
             InitializeComponent();
- 
         }
     }
 }

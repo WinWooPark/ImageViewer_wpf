@@ -32,12 +32,13 @@ namespace ImageViewer.ViewModel
             _comdoItems = new ObservableCollection<string>
             {
                 "Original",
-                "Gaussian Filter",
+                "Filter",
                 "Threshold",
                 "Bolb"
             };
-            _circleRoi = new ObservableCollection<CircleModel>();
-            _blobData = new ObservableCollection<BlobData>();
+
+            BlobData = new ObservableCollection<BlobData>();
+            BlobData.Clear();
 
             _systeminfo = IntegratedClass.Instance.SystemInfo;
 
@@ -47,20 +48,21 @@ namespace ImageViewer.ViewModel
         public void UpdateUI() 
         {
             ConcurrentQueue<BlobData> blobDatas = IntegratedClass.Instance.GetBlobData();
-            int Length = blobDatas.Count;
-            
-            foreach (BlobData blobData in blobDatas)
-            {
-                BlobData.Add(blobData);
-                CircleRoi.Add(new CircleModel(blobData.CenterPointX, blobData.CenterPointY, blobData.Radius));
-            }
 
-            blobDatas.Clear();
+            Random rand = new Random();
+
+            foreach (BlobData blobData in blobDatas)
+                BlobData.Add(blobData);
         }
 
         public void UpdateImage(BitmapSource bitmapSource) 
         {
             MainImage = bitmapSource;
+        }
+
+        public void UpdateSubImage(BitmapSource bitmapSource)
+        {
+            SubImage = bitmapSource;
         }
 
         string _version;
@@ -86,6 +88,19 @@ namespace ImageViewer.ViewModel
                 {
                     IntegratedClass.Instance.Threshold = value;
                     OnPropertyChanged(nameof(Threshold));
+                }
+            }
+        }
+
+        public double Reference
+        {
+            get { return IntegratedClass.Instance.Reference; }
+            set
+            {
+                if (IntegratedClass.Instance.Reference != value)
+                {
+                    IntegratedClass.Instance.Reference = value;
+                    OnPropertyChanged(nameof(Reference));
                 }
             }
         }
@@ -130,7 +145,32 @@ namespace ImageViewer.ViewModel
             }
         }
 
-        
+        public double CenterPointX
+        {
+            get => IntegratedClass.Instance.CenterPointX;
+            set
+            {
+                if (IntegratedClass.Instance.CenterPointX != value)
+                {
+                    IntegratedClass.Instance.CenterPointX = value;
+                    OnPropertyChanged(nameof(CenterPointX));
+                }
+            }
+        }
+
+        public double CenterPointY
+        {
+            get => IntegratedClass.Instance.CenterPointY;
+            set
+            {
+                if (IntegratedClass.Instance.CenterPointY != value)
+                {
+                    IntegratedClass.Instance.CenterPointY = value;
+                    OnPropertyChanged(nameof(CenterPointY));
+                }
+            }
+        }
+
         public double TranslateX
         {
             get { return IntegratedClass.Instance.TranslateX; }
@@ -144,7 +184,6 @@ namespace ImageViewer.ViewModel
             }
         }
 
-        
         public double TranslateY
         {
             get { return IntegratedClass.Instance.TranslateY; }
@@ -158,16 +197,16 @@ namespace ImageViewer.ViewModel
             }
         }
 
-        ObservableCollection<CircleModel>_circleRoi;
-        public ObservableCollection<CircleModel> CircleRoi 
+        private BlobData _selectedBlobItem;
+        public BlobData SelectedBlobItem
         {
-            get { return _circleRoi; }
+            get { return _selectedBlobItem; }
             set 
             {
-                if (_circleRoi != value) 
+                if (_selectedBlobItem != value)
                 {
-                    _circleRoi = value;
-                    OnPropertyChanged(nameof(CircleRoi));
+                    _selectedBlobItem = value;
+                    OnPropertyChanged(nameof(_selectedBlobItem));
                 }
             }
         }
@@ -181,7 +220,7 @@ namespace ImageViewer.ViewModel
             {
                 if (_blobData != value) { _blobData = value; }
 
-                OnPropertyChanged(nameof(_blobData));
+                OnPropertyChanged(nameof(BlobData));
             }
         }
 
@@ -235,6 +274,9 @@ namespace ImageViewer.ViewModel
         ICommand _ImageZoomOut;
         public ICommand ImageZoomOut { get; set; }
 
+        ICommand _SelectedBlobItemCommand;
+        public ICommand SelectedBlobItemCommand { get; set; }
+
         void CreateCommands() 
         {
             ImageLoad = new CommandsImageLoad(_systeminfo);
@@ -244,6 +286,7 @@ namespace ImageViewer.ViewModel
             ImageFit = new CommandsImageFit(_systeminfo);
             ImageZoomIn = new CommandsImageZoomIn(_systeminfo);
             ImageZoomOut = new CommandsImageZoomOut(_systeminfo);
+            SelectedBlobItemCommand = new CommandsSelectedBlobItem(_systeminfo);
         }
 
     }

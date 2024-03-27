@@ -25,7 +25,7 @@ namespace ImageViewer.Model
             _blobDatas = new ConcurrentQueue<BlobData>();
         }
 
-        int _threshold;
+        int _threshold = 150;
         public int Threshold 
         { 
             get { return _threshold; }
@@ -36,7 +36,7 @@ namespace ImageViewer.Model
             }
         }
 
-        double _reference;
+        double _reference = 67;
         public double Reference
         {
             get { return _reference; }
@@ -56,6 +56,32 @@ namespace ImageViewer.Model
                 if (_scale != value)
                 {
                     _scale = value;
+                }
+            }
+        }
+
+        double _centerPointX;
+        public double CenterPointX
+        {
+            get => _centerPointX;
+            set
+            {
+                if (_centerPointX != value)
+                {
+                    _centerPointX = value;
+                }
+            }
+        }
+
+        double _centerPointY;
+        public double CenterPointY
+        {
+            get => _centerPointY;
+            set
+            {
+                if (_centerPointY != value)
+                {
+                    _centerPointY = value;
                 }
             }
         }
@@ -147,6 +173,20 @@ namespace ImageViewer.Model
             });
         }
 
+        public void UpdataMainImage(Mat Image)
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                _mainViewModel.UpdateImage(SystemInfo.MatToBitmapSource(Image));
+            });
+        }
 
+        public void UpdataSubImage(Mat Image)
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                _mainViewModel.UpdateSubImage(SystemInfo.MatToBitmapSource(Image));
+            });
+        }
     }
 }

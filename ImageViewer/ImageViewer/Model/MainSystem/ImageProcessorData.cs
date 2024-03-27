@@ -63,6 +63,5 @@ namespace ImageViewer.Model.MainSystem
             get { return _height; }
             set { if (_height != value) _height = value; }
         }
-
     }
 }

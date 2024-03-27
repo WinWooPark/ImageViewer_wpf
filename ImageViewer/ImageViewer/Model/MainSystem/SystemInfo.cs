@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using ImageViewer.ViewModel;
 using Microsoft.Win32;
 using OpenCvSharp;
@@ -12,6 +14,7 @@ namespace ImageViewer.Model.MainSystem
         ImageProcessor _instance;
         Mat _image;
 
+        public Mat Image{ get => _image; }
         public SystemInfo()
         {
             _instance = ImageProcessor.Instance;
@@ -48,6 +51,10 @@ namespace ImageViewer.Model.MainSystem
             {
                 _image = Cv2.ImRead(dlg.FileName);
             }
+
+            if (_image.Empty()) return;
+
+            IntegratedClass.Instance.UpdataMainImage(_image);
         }
         public void ImageSave()
         {
@@ -82,20 +89,60 @@ namespace ImageViewer.Model.MainSystem
 
         public void ZoomFit()
         {
-            IntegratedClass.Instance.Scale = 0;
-            IntegratedClass.Instance.Scale = 0;
-            IntegratedClass.Instance.Scale = 0;
+
+            IntegratedClass.Instance.MainViewModel.Scale = 1;
+            IntegratedClass.Instance.MainViewModel.TranslateX = 0;
+            IntegratedClass.Instance.MainViewModel.TranslateY = 0;
         }
 
         public void StartInspction() 
         {
-            if(_image != null)
+            if(IntegratedClass.Instance.GetBlobData().Count != 0) IntegratedClass.Instance.GetBlobData().Clear();
+
+            if (IntegratedClass.Instance.MainViewModel.BlobData.Count != 0) IntegratedClass.Instance.MainViewModel.BlobData.Clear();
+            
+            if (_image != null)
                 _instance.SetImageProcessorBuffer(_image);
         }
 
         public void ImageChage() 
         {
+            string SelectedComdo = IntegratedClass.Instance.MainViewModel.SelectedItem;
 
+           Mat Image = _instance.SelectedImage(SelectedComdo);
+        
+            if (_image == null || _image.Empty() == true) return;
+
+            IntegratedClass.Instance.UpdataMainImage(Image);
+        }
+
+        public void SelectedBlobItem()
+        {
+            BlobData Selected = IntegratedClass.Instance.MainViewModel.SelectedBlobItem;
+
+            ConcurrentQueue<BlobData> blobDatas = IntegratedClass.Instance.GetBlobData();
+
+            BlobData Same = null;
+
+            foreach (BlobData data in blobDatas) 
+            {
+                if (data.Index == Selected.Index) 
+                {
+                    Same = data;
+                    break;
+                }
+            }
+
+            int Margin = 10;
+
+            int StartPointX = (int)(Same.CenterPointX - ((Same.Width + Margin) / 2));
+            int StartPointY = (int)(Same.CenterPointY - ((Same.Height + Margin) / 2));
+
+
+            Rect regionOfInterest = new Rect(StartPointX, StartPointY, (int)Same.Width + Margin, (int)Same.Height + Margin);
+            Mat CropImage = new Mat(_instance.Result, regionOfInterest);
+
+            IntegratedClass.Instance.UpdataSubImage(CropImage);
         }
     }
 }
