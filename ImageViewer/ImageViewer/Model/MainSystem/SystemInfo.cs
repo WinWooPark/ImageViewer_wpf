@@ -50,12 +50,11 @@ namespace ImageViewer.Model.MainSystem
             if (dlg.ShowDialog() == true) 
             {
                 _image = Cv2.ImRead(dlg.FileName);
+
+                IntegratedClass.Instance.UpdataMainImage(_image);
             }
-
-            if (_image.Empty()) return;
-
-            IntegratedClass.Instance.UpdataMainImage(_image);
         }
+
         public void ImageSave()
         {
             if (_image.Empty()) return;

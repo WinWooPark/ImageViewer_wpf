@@ -36,11 +36,14 @@ namespace ImageViewer.Model.MainSystem
         Mat _Threshold;
         Mat _Bolb;
         Mat _result;
+        Stopwatch _stopWatch;
         public Mat Result { get { return _result; } }
 
         public void InitImageProcessor() 
         {
             createBuffer();
+
+            _stopWatch = new Stopwatch();
 
             _bufferLocker = new object();
 
@@ -92,6 +95,9 @@ namespace ImageViewer.Model.MainSystem
 
         void processDefect() 
         {
+            _stopWatch.Reset();
+            _stopWatch.Start();
+
             //버퍼의 채널이 1이 아니라면 즉 grayscale 이 아닌 컬러일때 
             if (_buffer.Channels() != 1) 
                 Cv2.CvtColor(_buffer, _buffer, ColorConversionCodes.BGR2GRAY);
@@ -112,24 +118,9 @@ namespace ImageViewer.Model.MainSystem
 
             Point[] CenterPoint = new Point[contours.Length];
 
-            for (int i = 0; i < contours.Length; ++i)
-            {
-                BlobData blobData = null;
 
-                //추출한 외곽선을 기준으로 circle Fitting
-                FittingCircle(contours[i], out blobData);
 
-                if (blobData != null)
-                {
-                    blobData.Index = i;
-                    blobData.Result = Judgement(blobData);
-
-                    //데이터에 넣어둔다
-                    IntegratedClass.Instance.SetBlobData(blobData);
-                }
-            }
-
-            //Parallel.For(0, contours.Length, (i =>
+            //for (int i = 0; i < contours.Length; ++i)
             //{
             //    BlobData blobData = null;
 
@@ -144,9 +135,30 @@ namespace ImageViewer.Model.MainSystem
             //        //데이터에 넣어둔다
             //        IntegratedClass.Instance.SetBlobData(blobData);
             //    }
-            //}));
+            //}
+
+
+            Parallel.For(0, contours.Length, (i =>
+            {
+                BlobData blobData = null;
+
+                //추출한 외곽선을 기준으로 circle Fitting
+                FittingCircle(contours[i], out blobData);
+
+                if (blobData != null)
+                {
+                    blobData.Index = i;
+                    blobData.Result = Judgement(blobData);
+
+                    //데이터에 넣어둔다
+                    IntegratedClass.Instance.SetBlobData(blobData);
+                }
+            }));
 
             DrawResult();
+
+            _stopWatch.Stop();
+            IntegratedClass.Instance.ProcessTime = _stopWatch.ElapsedMilliseconds;
 
             IntegratedClass.Instance.InspDoneFunc(_result);
         }
@@ -183,8 +195,8 @@ namespace ImageViewer.Model.MainSystem
             Mat MatA = new Mat(Length,3, MatType.CV_64F);
 
             Mat vecB = new Mat(Length,1, MatType.CV_64F);
-            
-            
+
+
 
             for (int i = 0; i < Length; ++i)
             {

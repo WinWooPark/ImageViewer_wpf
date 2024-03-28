@@ -47,9 +47,9 @@ namespace ImageViewer.ViewModel
 
         public void UpdateUI() 
         {
-            ConcurrentQueue<BlobData> blobDatas = IntegratedClass.Instance.GetBlobData();
+            ProcessTime = IntegratedClass.Instance.ProcessTime;
 
-            Random rand = new Random();
+            ConcurrentQueue<BlobData> blobDatas = IntegratedClass.Instance.GetBlobData();
 
             foreach (BlobData blobData in blobDatas)
                 BlobData.Add(blobData);
@@ -193,6 +193,20 @@ namespace ImageViewer.ViewModel
                 {
                     IntegratedClass.Instance.TranslateY = value;
                     OnPropertyChanged(nameof(TranslateY));
+                }
+            }
+        }
+
+        double _processTime;
+        public double ProcessTime
+        {
+            get { return _processTime; }
+            set
+            {
+                if (_processTime != value)
+                {
+                    _processTime = value;
+                    OnPropertyChanged(nameof(ProcessTime));
                 }
             }
         }

@@ -47,9 +47,6 @@
 
 
                 <Grid  Grid.Column="0" Background="#303030" Margin="5,5,5,5" ClipToBounds="True">
-                    <!--<behaviors:Interaction.Behaviors>
-                        <MouseEvent:GirdSizeBehavior/>
-                    </behaviors:Interaction.Behaviors>-->
                     <Border>
                         <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" HorizontalAlignment="Center" AllowDrop="True" RenderOptions.BitmapScalingMode="Fant">
                             <Image.RenderTransform>
@@ -193,7 +190,21 @@
 
                             <TextBlock Grid.Row="0" Grid.Column="2" Text="Reference Value : " FontSize="20" Foreground="White" TextAlignment="Center" Margin="0,10,0,0"></TextBlock>
 
-                            <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding Reference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged ,StringFormat={}{0:0.###}}" FontSize="20" Foreground="White" TextAlignment="Center" Margin="0,10,0,10" Background="#FF2E3347"></TextBox>
+                            <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding Reference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged ,StringFormat={}{0:0.###}}" FontSize="20" Foreground="White" TextAlignment="Center" Margin="0,10,0,10" Background="#FF2E3347"/>
+
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Process Time : " FontSize="20" Foreground="White" TextAlignment="Center" Margin="0,10,0,0"/>
+
+                            <Grid Grid.Row="1" Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox Grid.Column="0" Text="{Binding ProcessTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged }" FontSize="20" Foreground="White" TextAlignment="Center" Margin="0,10,0,10" Background="#FF2E3347"/>
+                                <TextBlock Grid.Column="1" Text="ms" FontSize="20" Foreground="White" TextAlignment="Center" Margin="0,10,0,0"/>
+                            </Grid>
+                            
 
                         </Grid>
                     </Grid>

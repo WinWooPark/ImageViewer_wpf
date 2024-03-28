@@ -112,6 +112,19 @@ namespace ImageViewer.Model
             }
         }
 
+        double _processTime;
+        public double ProcessTime
+        {
+            get { return _processTime; }
+            set
+            {
+                if (_processTime != value)
+                {
+                    _processTime = value;
+                }
+            }
+        }
+
         ConcurrentQueue<BlobData> _blobDatas;
         public void SetBlobData(BlobData blobData) { _blobDatas.Enqueue(blobData); }
         public ConcurrentQueue<BlobData> GetBlobData() { return _blobDatas; }
