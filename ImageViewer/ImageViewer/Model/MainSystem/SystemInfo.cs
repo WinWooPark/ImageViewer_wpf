@@ -51,6 +51,8 @@ namespace ImageViewer.Model.MainSystem
             {
                 _image = Cv2.ImRead(dlg.FileName);
 
+                IntegratedClass.Instance.ImageSize = _image.Size();
+
                 IntegratedClass.Instance.UpdataMainImage(_image);
             }
         }
@@ -98,8 +100,13 @@ namespace ImageViewer.Model.MainSystem
         {
             if(IntegratedClass.Instance.GetBlobData().Count != 0) IntegratedClass.Instance.GetBlobData().Clear();
 
-            if (IntegratedClass.Instance.MainViewModel.BlobData.Count != 0) IntegratedClass.Instance.MainViewModel.BlobData.Clear();
-            
+            if (IntegratedClass.Instance.MainViewModel.BlobDatas.Count != 0) IntegratedClass.Instance.MainViewModel.BlobDatas.Clear();
+
+
+            if (IntegratedClass.Instance.GetDrawEllipse().Count != 0) IntegratedClass.Instance.GetDrawEllipse().Clear();
+
+            if (IntegratedClass.Instance.MainViewModel.DrawEllipses.Count != 0) IntegratedClass.Instance.MainViewModel.DrawEllipses.Clear();
+
             if (_image != null)
                 _instance.SetImageProcessorBuffer(_image);
         }
@@ -111,6 +118,10 @@ namespace ImageViewer.Model.MainSystem
            Mat Image = _instance.SelectedImage(SelectedComdo);
         
             if (_image == null || _image.Empty() == true) return;
+
+            if (IntegratedClass.Instance.MainViewModel.DrawEllipses.Count != 0) IntegratedClass.Instance.MainViewModel.DrawEllipses.Clear();
+
+            if (SelectedComdo == "Bolb") IntegratedClass.Instance.MainViewModel.DrawResult();
 
             IntegratedClass.Instance.UpdataMainImage(Image);
         }
@@ -134,11 +145,11 @@ namespace ImageViewer.Model.MainSystem
 
             int Margin = 10;
 
-            int StartPointX = (int)(Same.CenterPointX - ((Same.Width + Margin) / 2));
-            int StartPointY = (int)(Same.CenterPointY - ((Same.Height + Margin) / 2));
+            int StartPointX = (int)(Same.CenterPointX - ((Same.BlobSize.Width + Margin) / 2));
+            int StartPointY = (int)(Same.CenterPointY - ((Same.BlobSize.Height + Margin) / 2));
 
 
-            Rect regionOfInterest = new Rect(StartPointX, StartPointY, (int)Same.Width + Margin, (int)Same.Height + Margin);
+            Rect regionOfInterest = new Rect(StartPointX, StartPointY, (int)Same.BlobSize.Width + Margin, (int)Same.BlobSize.Height + Margin);
             Mat CropImage = new Mat(_instance.Result, regionOfInterest);
 
             IntegratedClass.Instance.UpdataSubImage(CropImage);

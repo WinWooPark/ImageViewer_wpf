@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenCvSharp;
 
 namespace ImageViewer.Model.MainSystem
 {
@@ -11,10 +12,14 @@ namespace ImageViewer.Model.MainSystem
         int _index;         //Blob 의 인덱스
         bool _result;       //Blob 결과 false = 불양 true = 양품
         double _radius;
-        double _centerPointX;
-        double _centerPointY;
-        double _width;
-        double _height;
+
+        Point2d _centerPoint;
+        Point2d _imageControlPoint;
+        Point2d _canvasControlPoint;
+
+        Size2d _blobSize;
+        Size2d _canVasBlobSize;
+
 
         public int Index
         {
@@ -39,29 +44,29 @@ namespace ImageViewer.Model.MainSystem
             get { return _radius; }
             set { if (_radius != value) _radius = value; }
         }
-
-        public double CenterPointX
+        
+        public double CenterPointX 
         {
-            get { return _centerPointX; }
-            set { if (_centerPointX != value) _centerPointX = value; }
+            get { return _centerPoint.X; }
+            set { if (_centerPoint.X != value) _centerPoint.X = value; }
         }
-       
+
         public double CenterPointY
         {
-            get { return _centerPointY; }
-            set { if (_centerPointY != value) _centerPointY = value; }
+            get { return _centerPoint.Y; }
+            set { if (_centerPoint.Y != value) _centerPoint.Y = value; }
         }
 
-        public double Width
+        public Point2d CenterPoint
         {
-            get { return _width; }
-            set { if (_width != value) _width = value; }
+            get { return _centerPoint; }
+            set { if (_centerPoint != value) _centerPoint = value; }
         }
 
-        public double Height
+        public Size2d BlobSize
         {
-            get { return _height; }
-            set { if (_height != value) _height = value; }
+            get { return _blobSize; }
+            set { if (_blobSize != value) _blobSize = value; }
         }
     }
 }

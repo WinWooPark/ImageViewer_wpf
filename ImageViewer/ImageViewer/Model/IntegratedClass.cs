@@ -23,6 +23,7 @@ namespace ImageViewer.Model
         private IntegratedClass() 
         {
             _blobDatas = new ConcurrentQueue<BlobData>();
+            _drawEllipse = new ConcurrentQueue<DrawEllipse>();
         }
 
         int _threshold = 150;
@@ -129,6 +130,10 @@ namespace ImageViewer.Model
         public void SetBlobData(BlobData blobData) { _blobDatas.Enqueue(blobData); }
         public ConcurrentQueue<BlobData> GetBlobData() { return _blobDatas; }
 
+        ConcurrentQueue<DrawEllipse> _drawEllipse;
+        public void SetDrawEllipse(DrawEllipse DrawEllipse) { _drawEllipse.Enqueue(DrawEllipse); }
+        public ConcurrentQueue<DrawEllipse> GetDrawEllipse() { return _drawEllipse; }
+
         ImageSource _mainImage;
         public ImageSource MainImage
         {
@@ -201,5 +206,70 @@ namespace ImageViewer.Model
                 _mainViewModel.UpdateSubImage(SystemInfo.MatToBitmapSource(Image));
             });
         }
+
+
+        ////////////////////////////////////////////////테스트////////////////////////////////////////////////
+
+        Size2d _imageSize;
+        public Size2d ImageSize
+        {
+            get { return _imageSize; }
+            set { if (_imageSize != value) _imageSize = value; }
+        }
+
+        Size2d _imageControlSize;
+        public Size2d ImageControlSize 
+        {
+            get { return _imageControlSize; }
+            set { if(_imageControlSize != value) _imageControlSize = value;}
+        }
+
+        Size2d _canvasControlSize;
+        public Size2d CanvasControlSize
+        {
+            get { return _canvasControlSize; }
+            set { if (_canvasControlSize != value) _canvasControlSize = value; }
+        }
+
+        public Point2d ImageToImageControlCoordi(Point2d InputPoint) 
+        {
+            Point2d OutputPoint = new Point2d();
+
+            double ScaleX = _imageControlSize.Width / (_imageSize.Width *_scale);
+            double ScaleY = _imageControlSize.Height / (_imageSize.Height * _scale);
+
+            OutputPoint.X = InputPoint.X * ScaleX;
+            OutputPoint.Y = InputPoint.Y * ScaleY;
+
+            return OutputPoint;
+        }
+
+        public Point2d ImageControlToCanvasControlCoordi(Point2d InputPoint)
+        {
+            Point2d OutputPoint = new Point2d();
+
+            //캔버스는 좌상단 시작 , 이미지는 중앙 정렬
+            double shiftX = (_canvasControlSize.Width - _imageControlSize.Width) / 2;
+            double shiftY = (_canvasControlSize.Height - _imageControlSize.Height) / 2;
+
+            OutputPoint.X = InputPoint.X + shiftX;
+            OutputPoint.Y = InputPoint.Y + shiftY;
+
+            return OutputPoint;
+        }
+
+        public Size2d ImageToImageControlLength(Size2d InputLength) 
+        {
+            Size2d Length = new Size2d();
+
+            double ScaleX = _imageControlSize.Width / _imageSize.Width;
+            double ScaleY = _imageControlSize.Height / _imageSize.Height;
+
+            Length.Width = InputLength.Width * ScaleX;
+            Length.Height = InputLength.Height * ScaleY;
+
+            return Length;
+        }
+
     }
 }

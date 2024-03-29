@@ -47,43 +47,45 @@
 
 
                 <Grid  Grid.Column="0" Background="#303030" Margin="5,5,5,5" ClipToBounds="True">
-                    <Border>
-                        <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" HorizontalAlignment="Center" AllowDrop="True" RenderOptions.BitmapScalingMode="Fant">
-                            <Image.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" CenterX="{Binding CenterPointX}" CenterY="{Binding CenterPointY}"/>
-                                    <TranslateTransform X="{Binding TranslateX}" Y="{Binding TranslateY}" />
-                                </TransformGroup>
-                            </Image.RenderTransform>
+                    <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" HorizontalAlignment="Center" AllowDrop="True" RenderOptions.BitmapScalingMode="Fant">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" CenterX="{Binding CenterPointX}" CenterY="{Binding CenterPointY}"/>
+                                <TranslateTransform X="{Binding TranslateX}" Y="{Binding TranslateY}" />
+                            </TransformGroup>
+                        </Image.RenderTransform>
 
-                            <behaviors:Interaction.Behaviors>
-                                <MouseEvent:MouseEventBehavior/>
-                                <MouseEvent:GirdSizeBehavior/>
-                            </behaviors:Interaction.Behaviors>
-                        </Image>
-                    </Border>
+
+                        <behaviors:Interaction.Behaviors>
+                            <MouseEvent:MouseEventBehavior/>
+                            <MouseEvent:ImageSizeBehavior/>
+                        </behaviors:Interaction.Behaviors>
+                    </Image>
+
+                    <ItemsControl ItemsSource="{Binding DrawEllipses}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas ClipToBounds="True" IsHitTestVisible="False" >
+                                    <behaviors:Interaction.Behaviors>
+                                        <MouseEvent:BorderSizeBehavior/>
+                                    </behaviors:Interaction.Behaviors>
+                                </Canvas>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style>
+                                <Setter Property="Canvas.Left" Value="{Binding CenterPointX}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding CenterPointY}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Ellipse Width="{Binding BlobWidth}" Height="{Binding BlobHeight}" Stroke="{Binding Fill}" StrokeThickness="1" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                     
-                    <!--<Border>
-                        <ItemsControl ItemsSource="{Binding CircleData}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <Canvas ClipToBounds="True" IsHitTestVisible="False"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemContainerStyle>
-                                <Style>
-                                    <Setter Property="Canvas.Left" Value="{Binding CircleCenterX}"/>
-                                    <Setter Property="Canvas.Top" Value="{Binding CircleCenterY}"/>
-                                </Style>
-                            </ItemsControl.ItemContainerStyle>
-
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Ellipse Width="{Binding CircleRadius}" Height="{Binding CircleRadius}" Stroke="Red" StrokeThickness="1" />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Border>-->
                 </Grid>
 
                 <Grid Grid.Column="1" >
@@ -221,7 +223,7 @@
                         </Border>
 
 
-                        <ListView Grid.Column="1" Margin="5,5,5,5" Background="#FF2E3347" ItemsSource="{Binding BlobData}" SelectedItem="{Binding SelectedBlobItem}">
+                        <ListView Grid.Column="1" Margin="5,5,5,5" Background="#FF2E3347" ItemsSource="{Binding BlobDatas}" SelectedItem="{Binding SelectedBlobItem}">
                             
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseDoubleClick">
@@ -261,7 +263,7 @@
                                         </GridViewColumn.HeaderContainerStyle>
                                     </GridViewColumn>
 
-                                    <GridViewColumn Header="PosY" Width="100" DisplayMemberBinding="{Binding CenterPointY , StringFormat={}{0:0.###}}">
+                                    <GridViewColumn Header="PosY" Width="100" DisplayMemberBinding="{Binding CenterPointY, StringFormat={}{0:0.###}}">
                                         <GridViewColumn.HeaderContainerStyle>
                                             <Style TargetType="GridViewColumnHeader">
                                                 <Setter Property="Background" Value="#FF2E3347"/>

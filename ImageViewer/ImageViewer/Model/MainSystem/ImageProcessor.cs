@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows.Media;
 using OpenCvSharp;
 
 namespace ImageViewer.Model.MainSystem
@@ -37,6 +38,7 @@ namespace ImageViewer.Model.MainSystem
         Mat _Bolb;
         Mat _result;
         Stopwatch _stopWatch;
+
         public Mat Result { get { return _result; } }
 
         public void InitImageProcessor() 
@@ -110,13 +112,13 @@ namespace ImageViewer.Model.MainSystem
             //객체 분리를 위해 Threshold
             Cv2.Threshold(_bilateral, _Threshold, nThreshold, 255, ThresholdTypes.Binary);
 
-            Point[][] contours;
+            OpenCvSharp.Point[][] contours;
             HierarchyIndex[] hierarchyIndex;
 
             //Blob의 외곽선 추출
             Cv2.FindContours(_Threshold, out contours, out hierarchyIndex, RetrievalModes.External, ContourApproximationModes.ApproxNone);
 
-            Point[] CenterPoint = new Point[contours.Length];
+            OpenCvSharp.Point[] CenterPoint = new OpenCvSharp.Point[contours.Length];
 
 
 
@@ -160,7 +162,7 @@ namespace ImageViewer.Model.MainSystem
             _stopWatch.Stop();
             IntegratedClass.Instance.ProcessTime = _stopWatch.ElapsedMilliseconds;
 
-            IntegratedClass.Instance.InspDoneFunc(_result);
+            IntegratedClass.Instance.InspDoneFunc(_buffer);
         }
 
         void DrawResult()
@@ -168,21 +170,38 @@ namespace ImageViewer.Model.MainSystem
             Cv2.CvtColor(_buffer, _result, ColorConversionCodes.GRAY2BGR);
             foreach (BlobData blobData in IntegratedClass.Instance.GetBlobData())
             {
-                string Index = string.Format("{0}", blobData.Index);
-                Point org = new Point((int)blobData.CenterPointX + 5, (int)blobData.CenterPointY);
-                Cv2.PutText(_result, Index, org, HersheyFonts.HersheyPlain, 1, new Scalar(0, 0, 0), 1);
+                //string Index = string.Format("{0}", blobData.Index);
 
-                Cv2.Circle(_result, (int)blobData.CenterPointX, (int)blobData.CenterPointY, 1, new Scalar(0, 0, 0), 2);
+                //Point point = new Point((int)blobData.CenterPointX + 5, (int)blobData.CenterPointY + 5);
+
+                //Cv2.PutText(_result, Index, point, HersheyFonts.HersheyPlain, 1, new Scalar(0, 0, 0), 1);
+
+                //Cv2.Circle(_result, (int)blobData.CenterPointX, (int)blobData.CenterPointY, 1, new Scalar(0, 0, 0), 2);
 
 
-                if (blobData.Result == true)
-                    Cv2.Circle(_result, (int)blobData.CenterPointX, (int)blobData.CenterPointY, (int)blobData.Radius, new Scalar(0, 255, 0), 2);
-                else
-                    Cv2.Circle(_result, (int)blobData.CenterPointX, (int)blobData.CenterPointY, (int)blobData.Radius, new Scalar(0, 0, 255), 2);
+                //if (blobData.Result == true)
+                //    Cv2.Circle(_result, (int)blobData.CenterPointX, (int)blobData.CenterPointY, (int)blobData.Radius, new Scalar(0, 255, 0), 2);
+                //else
+                //    Cv2.Circle(_result, (int)blobData.CenterPointX, (int)blobData.CenterPointY, (int)blobData.Radius, new Scalar(0, 0, 255), 2);
+
+
+                DrawEllipse drawEllipse = new DrawEllipse();
+
+                Point2d point = IntegratedClass.Instance.ImageToImageControlCoordi(blobData.CenterPoint);
+
+                drawEllipse.CenterPoint = IntegratedClass.Instance.ImageControlToCanvasControlCoordi(point);
+                drawEllipse.BlobSize = IntegratedClass.Instance.ImageToImageControlLength(new Size2d(blobData.Radius, blobData.Radius));
+
+                drawEllipse.Fill = Brushes.Green;
+
+                if (blobData.Result == false)
+                    drawEllipse.Fill = Brushes.Red;
+           
+                IntegratedClass.Instance.SetDrawEllipse(drawEllipse);
             }
         }
 
-        void FittingCircle(Point[] point, out BlobData blobData) 
+        void FittingCircle(OpenCvSharp.Point[] point, out BlobData blobData) 
         {
             int Length = point.Length;
 
@@ -195,8 +214,6 @@ namespace ImageViewer.Model.MainSystem
             Mat MatA = new Mat(Length,3, MatType.CV_64F);
 
             Mat vecB = new Mat(Length,1, MatType.CV_64F);
-
-
 
             for (int i = 0; i < Length; ++i)
             {
@@ -223,10 +240,10 @@ namespace ImageViewer.Model.MainSystem
             Mat parameters = pseudoInverse * vecB;
 
             blobData = new BlobData();
-            blobData.CenterPointX = parameters.At<double>(0, 0);
+            blobData.CenterPointX =parameters.At<double>(0, 0);
             blobData.CenterPointY = parameters.At<double>(0, 1);
             blobData.Radius = Math.Round(Math.Sqrt(Math.Pow(parameters.At<double>(0, 0), 2) + Math.Pow(parameters.At<double>(0, 1), 2) - parameters.At<double>(0, 2)),2);
-            blobData.Width = blobData.Height =  blobData.Radius * 2;
+            blobData.BlobSize = new Size2d(blobData.Radius * 2, blobData.Radius * 2);
             return;
         }
 

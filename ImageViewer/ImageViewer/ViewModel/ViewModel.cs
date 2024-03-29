@@ -37,8 +37,11 @@ namespace ImageViewer.ViewModel
                 "Bolb"
             };
 
-            BlobData = new ObservableCollection<BlobData>();
-            BlobData.Clear();
+            BlobDatas = new ObservableCollection<BlobData>();
+            BlobDatas.Clear();
+
+            DrawEllipses = new ObservableCollection<DrawEllipse>();
+            DrawEllipses.Clear();
 
             _systeminfo = IntegratedClass.Instance.SystemInfo;
 
@@ -49,10 +52,20 @@ namespace ImageViewer.ViewModel
         {
             ProcessTime = IntegratedClass.Instance.ProcessTime;
 
+            DrawResult();
+
             ConcurrentQueue<BlobData> blobDatas = IntegratedClass.Instance.GetBlobData();
 
             foreach (BlobData blobData in blobDatas)
-                BlobData.Add(blobData);
+                BlobDatas.Add(blobData);
+        }
+
+        public void DrawResult() 
+        {
+            ConcurrentQueue<DrawEllipse> drawEllipse = IntegratedClass.Instance.GetDrawEllipse();
+
+            foreach (DrawEllipse Ellipse in drawEllipse)
+                DrawEllipses.Add(Ellipse);
         }
 
         public void UpdateImage(BitmapSource bitmapSource) 
@@ -227,7 +240,7 @@ namespace ImageViewer.ViewModel
 
         private ObservableCollection<BlobData> _blobData;
 
-        public ObservableCollection<BlobData> BlobData
+        public ObservableCollection<BlobData> BlobDatas
         {
             get { return _blobData; }
             set
@@ -235,6 +248,19 @@ namespace ImageViewer.ViewModel
                 if (_blobData != value) { _blobData = value; }
 
                 OnPropertyChanged(nameof(BlobData));
+            }
+        }
+
+        private ObservableCollection<DrawEllipse> _drawEllipse;
+
+        public ObservableCollection<DrawEllipse> DrawEllipses
+        {
+            get { return _drawEllipse; }
+            set
+            {
+                if (_drawEllipse != value) { _drawEllipse = value; }
+
+                OnPropertyChanged(nameof(DrawEllipse));
             }
         }
 
