@@ -27,6 +27,7 @@ namespace ImageViewer.Behaviors
             double Height = AssociatedObject.ActualHeight;
 
             IntegratedClass.Instance.ImageControlSize = new Size2d(Width, Height);
+            IntegratedClass.Instance.CalRatio();
         }
     }
 

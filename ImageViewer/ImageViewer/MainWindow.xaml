@@ -6,8 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:Blob="clr-namespace:ImageViewer.Model.MainSystem"
-        xmlns:MouseEvent="clr-namespace:ImageViewer.Behaviors" 
-        WindowState="Maximized"
+        xmlns:MouseEvent="clr-namespace:ImageViewer.Behaviors"
         xmlns:local="clr-namespace:ImageViewer" 
         mc:Ignorable="d"
         Background="#FF1C2135"
@@ -47,7 +46,7 @@
 
 
                 <Grid  Grid.Column="0" Background="#303030" Margin="5,5,5,5" ClipToBounds="True">
-                    <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" HorizontalAlignment="Center" AllowDrop="True" RenderOptions.BitmapScalingMode="Fant">
+                    <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" HorizontalAlignment="Center"  AllowDrop="True" RenderOptions.BitmapScalingMode="Fant">
                         <Image.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" CenterX="{Binding CenterPointX}" CenterY="{Binding CenterPointY}"/>
@@ -65,12 +64,12 @@
                     <ItemsControl ItemsSource="{Binding DrawEllipses}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <Canvas ClipToBounds="True" IsHitTestVisible="False" >
+                                <Canvas ClipToBounds="False">
                                     <behaviors:Interaction.Behaviors>
                                         <MouseEvent:BorderSizeBehavior/>
                                     </behaviors:Interaction.Behaviors>
-                                </Canvas>
-                            </ItemsPanelTemplate>
+                            </Canvas>
+                        </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemContainerStyle>
                             <Style>
@@ -85,7 +84,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    
+                
                 </Grid>
 
                 <Grid Grid.Column="1" >

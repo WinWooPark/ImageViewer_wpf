@@ -122,25 +122,7 @@ namespace ImageViewer.Model.MainSystem
 
 
 
-            //for (int i = 0; i < contours.Length; ++i)
-            //{
-            //    BlobData blobData = null;
-
-            //    //추출한 외곽선을 기준으로 circle Fitting
-            //    FittingCircle(contours[i], out blobData);
-
-            //    if (blobData != null)
-            //    {
-            //        blobData.Index = i;
-            //        blobData.Result = Judgement(blobData);
-
-            //        //데이터에 넣어둔다
-            //        IntegratedClass.Instance.SetBlobData(blobData);
-            //    }
-            //}
-
-
-            Parallel.For(0, contours.Length, (i =>
+            for (int i = 0; i < contours.Length; ++i)
             {
                 BlobData blobData = null;
 
@@ -155,7 +137,25 @@ namespace ImageViewer.Model.MainSystem
                     //데이터에 넣어둔다
                     IntegratedClass.Instance.SetBlobData(blobData);
                 }
-            }));
+            }
+
+
+            //Parallel.For(0, contours.Length, (i =>
+            //{
+            //    BlobData blobData = null;
+
+            //    //추출한 외곽선을 기준으로 circle Fitting
+            //    FittingCircle(contours[i], out blobData);
+
+            //    if (blobData != null)
+            //    {
+            //        blobData.Index = i;
+            //        blobData.Result = Judgement(blobData);
+
+            //        //데이터에 넣어둔다
+            //        IntegratedClass.Instance.SetBlobData(blobData);
+            //    }
+            //}));
 
             DrawResult();
 
@@ -187,10 +187,15 @@ namespace ImageViewer.Model.MainSystem
 
                 DrawEllipse drawEllipse = new DrawEllipse();
 
-                Point2d point = IntegratedClass.Instance.ImageToImageControlCoordi(blobData.CenterPoint);
-
-                drawEllipse.CenterPoint = IntegratedClass.Instance.ImageControlToCanvasControlCoordi(point);
                 drawEllipse.BlobSize = IntegratedClass.Instance.ImageToImageControlLength(new Size2d(blobData.Radius, blobData.Radius));
+
+                Point2d point = IntegratedClass.Instance.ImageToImageControlCoordi(blobData.CenterPoint);
+                drawEllipse.CenterPoint = IntegratedClass.Instance.ImageControlToCanvasControlCoordi(point,drawEllipse.BlobSize);
+
+                //drawEllipse.CenterPoint = IntegratedClass.Instance.ImageToImageControlCoordi(blobData.CenterPoint);
+                drawEllipse.BlobSize = IntegratedClass.Instance.ImageToImageControlLength(new Size2d(blobData.Radius, blobData.Radius));
+
+                
 
                 drawEllipse.Fill = Brushes.Green;
 
@@ -240,9 +245,9 @@ namespace ImageViewer.Model.MainSystem
             Mat parameters = pseudoInverse * vecB;
 
             blobData = new BlobData();
-            blobData.CenterPointX =parameters.At<double>(0, 0);
-            blobData.CenterPointY = parameters.At<double>(0, 1);
-            blobData.Radius = Math.Round(Math.Sqrt(Math.Pow(parameters.At<double>(0, 0), 2) + Math.Pow(parameters.At<double>(0, 1), 2) - parameters.At<double>(0, 2)),2);
+            blobData.CenterPointX =parameters.At<double>(0);
+            blobData.CenterPointY = parameters.At<double>(1);
+            blobData.Radius = Math.Round(Math.Sqrt(Math.Pow(parameters.At<double>(0), 2) + Math.Pow(parameters.At<double>(1), 2) - parameters.At<double>(2)),2);
             blobData.BlobSize = new Size2d(blobData.Radius * 2, blobData.Radius * 2);
             return;
         }

@@ -231,29 +231,41 @@ namespace ImageViewer.Model
             set { if (_canvasControlSize != value) _canvasControlSize = value; }
         }
 
+        Size2d _ratio;
+        public Size2d Ratio
+        {
+            get { return _ratio; }
+            set { if (_ratio != value) _ratio = value; }
+        }
+
+        public void CalRatio() 
+        {
+            _ratio.Width = _imageControlSize.Width / (_imageSize.Width);
+            _ratio.Height= _imageControlSize.Height / (_imageSize.Height);
+        }
+
         public Point2d ImageToImageControlCoordi(Point2d InputPoint) 
         {
+            //Image 좌표에서 Image Control 좌표로 는 스케일 변환
             Point2d OutputPoint = new Point2d();
 
-            double ScaleX = _imageControlSize.Width / (_imageSize.Width *_scale);
-            double ScaleY = _imageControlSize.Height / (_imageSize.Height * _scale);
-
-            OutputPoint.X = InputPoint.X * ScaleX;
-            OutputPoint.Y = InputPoint.Y * ScaleY;
+            OutputPoint.X = InputPoint.X * _ratio.Width;
+            OutputPoint.Y = InputPoint.Y * _ratio.Height;
 
             return OutputPoint;
         }
 
-        public Point2d ImageControlToCanvasControlCoordi(Point2d InputPoint)
+        public Point2d ImageControlToCanvasControlCoordi(Point2d InputPoint , Size2d InputLength)
         {
+            //Image Control  Canvas로 좌표 변화는 이동변환
             Point2d OutputPoint = new Point2d();
 
             //캔버스는 좌상단 시작 , 이미지는 중앙 정렬
             double shiftX = (_canvasControlSize.Width - _imageControlSize.Width) / 2;
             double shiftY = (_canvasControlSize.Height - _imageControlSize.Height) / 2;
 
-            OutputPoint.X = InputPoint.X + shiftX;
-            OutputPoint.Y = InputPoint.Y + shiftY;
+            OutputPoint.X = InputPoint.X + shiftX - (InputLength.Width /2);
+            OutputPoint.Y = InputPoint.Y + shiftY - (InputLength.Height/2);
 
             return OutputPoint;
         }
@@ -265,8 +277,9 @@ namespace ImageViewer.Model
             double ScaleX = _imageControlSize.Width / _imageSize.Width;
             double ScaleY = _imageControlSize.Height / _imageSize.Height;
 
-            Length.Width = InputLength.Width * ScaleX;
-            Length.Height = InputLength.Height * ScaleY;
+            //반지름이기 때문에 2를 곱한다.
+            Length.Width = InputLength.Width * ScaleX * 2; 
+            Length.Height = InputLength.Height * ScaleY * 2;
 
             return Length;
         }
