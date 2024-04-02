@@ -9,8 +9,8 @@
     <Border BorderBrush="White" BorderThickness="2">
         <Grid Background="#FF1C2135">
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition Height="989.92"/>
+                <RowDefinition Height ="1*"/>
+                <RowDefinition Height="11.5*"/>
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" Background="#2E3347">
@@ -23,7 +23,21 @@
                 </Grid.ColumnDefinitions>
                 <Image Source="E:\5. Project_Test\3. WPF_ImageViewer\ImageViewer\ImageViewer_V2\ImageViewer_V2\Icon\intek_logo.png" Margin="15,15,15,15" HorizontalAlignment ="Left"/>
                 <TextBlock Grid.Column="2" Text="Basler Viewer" Foreground="White" FontSize="48" FontFamily="Arial Black" Margin="0,10,0,0" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Column="4" Text="Ver : 0.0.1" Foreground="White" FontSize="20" FontFamily="Arial Black" Margin="0,50,10,0" HorizontalAlignment="Right"/>
+
+                <Grid Grid.Column="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Ver : " Foreground="White" FontSize="20" FontFamily="Arial Black"  HorizontalAlignment="Right"/>
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Version , Mode=OneWay ,UpdateSourceTrigger=PropertyChanged}" Foreground="White" FontSize="20" FontFamily="Arial Black" HorizontalAlignment="Left"/>
+                </Grid>
             </Grid>
 
             <Grid Grid.Row="1">

@@ -9,6 +9,7 @@ using System.Windows.Navigation;
 
 namespace ImageViewer_V2.Model.MainSystem
 {
+    //라이브러리 및 데이터 를 엮는 클래스
     public class IntegratedClass
     {
         private static IntegratedClass? _instance = null;
@@ -26,13 +27,18 @@ namespace ImageViewer_V2.Model.MainSystem
         BasicData _basicData;
         public BasicData BasicData {get { return _basicData; } }
 
+        SystemData _systemData;
+        public SystemData SystemData { get { return _systemData; } }
+
         ImageProcessor _imageProcessor;
         public ImageProcessor ImageProcessor { get { return _imageProcessor; } }
 
         private IntegratedClass()
         {
+            
             _basicData = new BasicData();
             _imageProcessor = new ImageProcessor();
+            _systemData = new SystemData();
         }
     }
 }

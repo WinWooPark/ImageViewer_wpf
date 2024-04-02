@@ -12,16 +12,18 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ImageViewer_V2.ViewModel;
 
 namespace ImageViewer_V2.View
 {
-    /// <summary>
-    /// ImageLoad.xaml에 대한 상호 작용 논리
-    /// </summary>
+  
     public partial class ImageLoad : UserControl
     {
+        ImageLoadViewModel _imageLoadViewModel;
         public ImageLoad()
         {
+            _imageLoadViewModel = new ImageLoadViewModel();
+            DataContext = _imageLoadViewModel;
             InitializeComponent();
         }
     }
