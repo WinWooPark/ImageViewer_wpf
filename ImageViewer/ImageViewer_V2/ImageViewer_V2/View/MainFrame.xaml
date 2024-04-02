@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="ImageViewer_V2.View.MainFrame"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ImageViewer_V2.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="1080" d:DesignWidth="1920">
+    <Border BorderBrush="White" BorderThickness="2">
+        <Grid Background="#FF1C2135">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="989.92"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Background="#2E3347">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Image Source="E:\5. Project_Test\3. WPF_ImageViewer\ImageViewer\ImageViewer_V2\ImageViewer_V2\Icon\intek_logo.png" Margin="15,15,15,15" HorizontalAlignment ="Left"/>
+                <TextBlock Grid.Column="2" Text="Basler Viewer" Foreground="White" FontSize="48" FontFamily="Arial Black" Margin="0,10,0,0" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="4" Text="Ver : 0.0.1" Foreground="White" FontSize="20" FontFamily="Arial Black" Margin="0,50,10,0" HorizontalAlignment="Right"/>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <local:ImageViewer/>
+            </Grid>
+
+        </Grid>
+    </Border>
+</UserControl>

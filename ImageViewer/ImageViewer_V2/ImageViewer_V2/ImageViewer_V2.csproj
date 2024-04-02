@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <Platforms>AnyCPU;x64</Platforms>
     <ApplicationIcon>Icon\intek_logo_Short.ico</ApplicationIcon>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,20 +15,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Icon\intek_logo_Short.ico" />
+    <EmbeddedResource Include="Icon\intek_logo_Short.ico" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
-    <PackageReference Include="MicrosoftExpressionInteractions" Version="3.0.40218" />
     <PackageReference Include="OpenCvSharp4" Version="4.9.0.20240103" />
     <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.9.0.20240103" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Icon\intek_logo.png" />
+    <EmbeddedResource Include="Icon\intek_logo.png" />
   </ItemGroup>
 
 </Project>
