@@ -1,5 +1,5 @@
 ﻿using ImageViewer_V2.ViewModel;
-using ImageViewer_V2.Model.MainSystem;
+using ImageViewer_V2.Model.ManagementSystem;
 using System.Windows;
 
 namespace ImageViewer_V2
@@ -10,13 +10,13 @@ namespace ImageViewer_V2
     public partial class App : Application
     {
         MainViewModel _mainViewModel;
-        IntegratedClass _integratedClass;
         MainSystem _mainSystem;
         public App()
         {
-            _mainViewModel = new MainViewModel();
-            _integratedClass = IntegratedClass.Instance;
             _mainSystem = MainSystem.Instance;
+            _mainSystem.InitMainSystem();
+
+            _mainViewModel = new MainViewModel();
         }
         protected override void OnStartup(StartupEventArgs e)
         {

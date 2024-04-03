@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImageViewer_V2.Model.Data;
-using ImageViewer_V2.Model.MainSystem;
+using ImageViewer_V2.Model.ManagementSystem;
 
 namespace ImageViewer_V2.ViewModel
 {
@@ -15,15 +15,16 @@ namespace ImageViewer_V2.ViewModel
     {
         IntegratedClass _integratedClass;
         BasicData _basicData;
+        SystemData _systemData;
         MainSystem _mainSystem;
 
         public ParameterSettingViewModel()
         {
             _mainSystem = MainSystem.Instance;
-            _mainSystem.ViewModels.Add(this.GetType().Name, this);
-
-            _integratedClass = IntegratedClass.Instance;
+            _integratedClass = _mainSystem.IntegratedClass;
+            _integratedClass.ParameterSettingViewModel = this;
             _basicData = _integratedClass.BasicData;
+            _systemData = _integratedClass.SystemData;
 
             SaveParameterCommand = new RelayCommand(_basicData.SaveBasicData);
         }
@@ -56,12 +57,12 @@ namespace ImageViewer_V2.ViewModel
 
         public double ProcessTime
         {
-            get { return _basicData.ProcessTime; }
+            get { return _systemData.ProcessTime; }
             set
             {
-                if (_basicData.ProcessTime != value)
+                if (_systemData.ProcessTime != value)
                 {
-                    _basicData.ProcessTime = value;
+                    _systemData.ProcessTime = value;
                     OnPropertyChanged(nameof(ProcessTime));
                 }
             }

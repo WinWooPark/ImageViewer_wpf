@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ImageViewer_V2.Model.MainSystem;
+using ImageViewer_V2.Model.ManagementSystem;
 using ImageViewer_V2.Model.Data;
 
 namespace ImageViewer_V2.ViewModel
@@ -12,12 +12,16 @@ namespace ImageViewer_V2.ViewModel
     public class MainFrameViewModel : ObservableObject
     {
         IntegratedClass _integratedClass;
+        MainSystem _mainSystem;
         BasicData _basicData;
 
         public MainFrameViewModel()
         {
-            _integratedClass = IntegratedClass.Instance;
+            _mainSystem = MainSystem.Instance;
+            _integratedClass = _mainSystem.IntegratedClass;
+            _integratedClass.MainFrameViewModel = this;
             _basicData = _integratedClass.BasicData;
+            
         }
 
         public string Version 

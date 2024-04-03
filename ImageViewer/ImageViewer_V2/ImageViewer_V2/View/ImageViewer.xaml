@@ -4,9 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ImageViewer_V2.View"
+             xmlns:b = "http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviors ="clr-namespace:ImageViewer_V2.Behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="989" d:DesignWidth="1920">
-    
+
     <UserControl.Resources>
         <Style x:Key="HardWarestatus" TargetType="Border">
             <Setter Property="CornerRadius" Value="5"/>
@@ -43,35 +45,35 @@
 
     <Border BorderBrush="White" BorderThickness="2">
         <Grid Background="#FF1C2135" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="0.5*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="1*"/>
-        </Grid.RowDefinitions>
-            
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
 
-            <Border Grid.Column="0" Background="Red" Style="{StaticResource HardWarestatus}">
-                <TextBlock Text="Camera" HorizontalAlignment="Center" Foreground="White" Margin="0,1,0,0" FontSize="25"/>
-            </Border>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="1" Background="Red"  Style="{StaticResource HardWarestatus}">
-                <TextBlock Text="Light" HorizontalAlignment="Center" Foreground="White" Margin="0,1,0,0" FontSize="25"/>
-            </Border>
-            
-            
+                <Border Grid.Column="0" Background="Red" Style="{StaticResource HardWarestatus}">
+                    <TextBlock Text="Camera" HorizontalAlignment="Center" Foreground="White" Margin="0,1,0,0" FontSize="25"/>
+                </Border>
+
+                <Border Grid.Column="1" Background="Red"  Style="{StaticResource HardWarestatus}">
+                    <TextBlock Text="Light" HorizontalAlignment="Center" Foreground="White" Margin="0,1,0,0" FontSize="25"/>
+                </Border>
+
+
             </Grid>
 
             <Grid Grid.Row="1">
@@ -80,11 +82,48 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
 
-                <Grid Grid.Column="0" Background="#303030">
-                    <Border BorderBrush="White" BorderThickness="2">
-                        <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" HorizontalAlignment="Center"  AllowDrop="True" RenderOptions.BitmapScalingMode="Fant" Grid.Column="1"/>
-                    </Border>
-                </Grid>
+                <Border BorderBrush="White" BorderThickness="1">
+                    <Grid Grid.Column="0" Background="#303030" ClipToBounds="True" >
+                        <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" HorizontalAlignment="Center"  AllowDrop="True" RenderOptions.BitmapScalingMode="Fant" Grid.Column="1">
+                            <b:Interaction.Behaviors>
+                                <behaviors:ImageSizeBehavior/>
+                                <behaviors:MouseEventBehavior/>
+                            </b:Interaction.Behaviors>
+
+                            <Image.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" CenterX="{Binding CenterPointX}" CenterY="{Binding CenterPointY}"/>
+                                    <TranslateTransform X="{Binding TranslationX}" Y="{Binding TranslationY}" />
+                                </TransformGroup>
+                            </Image.RenderTransform>
+                        </Image>
+
+                        <ItemsControl ItemsSource="{Binding DrawEllipses}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas >
+                                        <b:Interaction.Behaviors>
+                                            <behaviors:CanvasSizeBehavior/>
+                                        </b:Interaction.Behaviors>
+                                    </Canvas>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style>
+                                    <Setter Property="Canvas.Left" Value="{Binding CenterPointX}"/>
+                                    <Setter Property="Canvas.Top" Value="{Binding CenterPointY}"/>
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Ellipse Width="{Binding BlobWidth}" Height="{Binding BlobHeight}" Stroke="{Binding Fill}" StrokeThickness="1" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </Grid>
+                </Border>
 
                 <Grid Grid.Column="2">
                     <Grid.RowDefinitions>
@@ -93,7 +132,11 @@
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0">
-                        <TabControl Grid.Row="0" Background="#FF1C2135" TabStripPlacement="Top" BorderBrush="#FF1C2135">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="73*"/>
+                            <ColumnDefinition Width="406*"/>
+                        </Grid.ColumnDefinitions>
+                        <TabControl Grid.Row="0" Background="#FF1C2135" TabStripPlacement="Top" BorderBrush="#FF1C2135" Grid.ColumnSpan="2">
                             <TabItem Header="Image Load">
                                 <local:ImageLoad/>
                             </TabItem>
@@ -107,8 +150,6 @@
                             </TabItem>
 
                         </TabControl>
-                        
-                        
                     </Grid>
 
                     <Grid Grid.Row="1">
@@ -117,12 +158,12 @@
                 </Grid>
 
             </Grid>
-            
+
             <Grid Grid.Row="3">
                 <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
 
                 <Grid Grid.Column="0">
                     <Grid.ColumnDefinitions>
@@ -131,7 +172,7 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0" Style="{StaticResource CustomButtom}" Content="Fit"/>
+                    <Button Grid.Column="0" Style="{StaticResource CustomButtom}" Command="{Binding ImageFitCommand}" Content="Fit"/>
                     <Button Grid.Column="1" Style="{StaticResource CustomButtom}" Content="Zoom In"/>
                     <Button Grid.Column="2" Style="{StaticResource CustomButtom}" Content="Zoom Out"/>
                 </Grid>
@@ -145,6 +186,6 @@
                     <Button Grid.Column="2" Style="{StaticResource CustomButtom}" Content="Exit" Command="{Binding ExitCommand}"/>
                 </Grid>
             </Grid>
-    </Grid>
+        </Grid>
     </Border>
 </UserControl>

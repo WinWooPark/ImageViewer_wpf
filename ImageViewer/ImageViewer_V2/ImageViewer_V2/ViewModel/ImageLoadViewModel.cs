@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ImageViewer_V2.Model.MainSystem;
+using ImageViewer_V2.Model.ManagementSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +11,14 @@ namespace ImageViewer_V2.ViewModel
 {
     public class ImageLoadViewModel : ObservableObject
     {
+        IntegratedClass _integratedClass;
         MainSystem _mainSystem;
+        
         public ImageLoadViewModel()
         {
             _mainSystem = MainSystem.Instance;
-            _mainSystem.ViewModels.Add(this.GetType().Name, this);
+            _integratedClass = _mainSystem.IntegratedClass;
+            _integratedClass.ImageLoadViewModel = this;
             CreateCommand();
         }
 

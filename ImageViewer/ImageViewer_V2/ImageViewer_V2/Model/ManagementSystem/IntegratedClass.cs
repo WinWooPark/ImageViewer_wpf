@@ -7,18 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Navigation;
 
-namespace ImageViewer_V2.Model.MainSystem
+namespace ImageViewer_V2.Model.ManagementSystem
 {
     //라이브러리 및 데이터 를 엮는 클래스
-    public class IntegratedClass
+    public class IntegratedClass : UiViewModels
     {
-        private static IntegratedClass? _instance = null;
+        static private IntegratedClass? _instance = null;
 
         static public IntegratedClass Instance
         {
-            get 
+            get
             {
-                if(_instance == null) _instance = new IntegratedClass();
+                if (_instance == null) _instance = new IntegratedClass();
 
                 return _instance;
             }
@@ -35,10 +35,19 @@ namespace ImageViewer_V2.Model.MainSystem
 
         private IntegratedClass()
         {
-            
+        }
+
+        public void InitIntegratedClass() 
+        {
             _basicData = new BasicData();
-            _imageProcessor = new ImageProcessor();
             _systemData = new SystemData();
+            _imageProcessor = new ImageProcessor();
+            _imageProcessor.InitImageProcessor(this);
+        }
+
+        public void CloseIntegratedClass() 
+        {
+            
         }
     }
 }

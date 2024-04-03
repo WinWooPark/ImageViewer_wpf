@@ -29,12 +29,7 @@ namespace ImageViewer_V2.Model.Data
             set { if (_reference != value) _reference = value; }
         }
 
-        double _processTime;
-        public double ProcessTime
-        {
-            get { return _processTime; }
-            set { if (_processTime != value) { _processTime = value; } }
-        }
+      
 
         //파일 저장
         public void SaveBasicData() 

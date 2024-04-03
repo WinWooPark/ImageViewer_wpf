@@ -9,6 +9,7 @@
         xmlns:MouseEvent="clr-namespace:ImageViewer.Behaviors"
         xmlns:local="clr-namespace:ImageViewer" 
         mc:Ignorable="d"
+        WindowState="Maximized"
         Background="#FF1C2135"
         Title="ImageViewer" Height="1050" Width="1680"
         >
@@ -224,11 +225,11 @@
 
                         <ListView Grid.Column="1" Margin="5,5,5,5" Background="#FF2E3347" ItemsSource="{Binding BlobDatas}" SelectedItem="{Binding SelectedBlobItem}">
                             
-                            <i:Interaction.Triggers>
+                            <!--<i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseDoubleClick">
                                     <i:InvokeCommandAction Command="{Binding SelectedBlobItemCommand}" />
                                 </i:EventTrigger>
-                            </i:Interaction.Triggers>
+                            </i:Interaction.Triggers>-->
                             
                             <ListView.View>
                                 <GridView>
