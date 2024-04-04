@@ -29,4 +29,8 @@
     <EmbeddedResource Include="Icon\intek_logo.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ImageView\ImageView.csproj" />
+  </ItemGroup>
+
 </Project>

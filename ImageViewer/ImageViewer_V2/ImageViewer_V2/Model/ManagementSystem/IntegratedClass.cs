@@ -1,11 +1,6 @@
 ﻿using ImageViewer_V2.Model.Data;
 using ImageViewer_V2.Model.ImageProcess;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Navigation;
+using ImageView.API;
 
 namespace ImageViewer_V2.Model.ManagementSystem
 {
@@ -23,6 +18,9 @@ namespace ImageViewer_V2.Model.ManagementSystem
                 return _instance;
             }
         }
+
+        ImageViewAPI _imageViewAPI;
+        public ImageViewAPI ImageViewAPI { get { return _imageViewAPI; } }
 
         BasicData _basicData;
         public BasicData BasicData {get { return _basicData; } }
@@ -42,12 +40,14 @@ namespace ImageViewer_V2.Model.ManagementSystem
             _basicData = new BasicData();
             _systemData = new SystemData();
             _imageProcessor = new ImageProcessor();
+            _imageViewAPI = ImageViewAPI.Instance;
+            _imageViewAPI.InitImageView(3780,3780);
             _imageProcessor.InitImageProcessor(this);
         }
 
         public void CloseIntegratedClass() 
         {
-            
+            _imageProcessor.CloseImageProcessor();
         }
     }
 }

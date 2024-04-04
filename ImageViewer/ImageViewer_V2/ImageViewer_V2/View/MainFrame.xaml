@@ -1,47 +1,73 @@
-﻿<UserControl x:Class="ImageViewer_V2.View.MainFrame"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:ImageViewer_V2.View"
-             mc:Ignorable="d" 
-             d:DesignHeight="1080" d:DesignWidth="1920">
+﻿<UserControl
+    x:Class="ImageViewer_V2.View.MainFrame"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ImageViewer_V2.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="1080"
+    d:DesignWidth="1920"
+    mc:Ignorable="d">
     <Border BorderBrush="White" BorderThickness="2">
         <Grid Background="#FF1C2135">
             <Grid.RowDefinitions>
-                <RowDefinition Height ="1*"/>
-                <RowDefinition Height="11.5*"/>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="11.5*" />
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" Background="#2E3347">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
-                <Image Source="E:\5. Project_Test\3. WPF_ImageViewer\ImageViewer\ImageViewer_V2\ImageViewer_V2\Icon\intek_logo.png" Margin="15,15,15,15" HorizontalAlignment ="Left"/>
-                <TextBlock Grid.Column="2" Text="Basler Viewer" Foreground="White" FontSize="48" FontFamily="Arial Black" Margin="0,10,0,0" HorizontalAlignment="Center"/>
+                <Image
+                    Margin="15,15,15,15"
+                    HorizontalAlignment="Left"
+                    Source="E:\5. Project_Test\3. WPF_ImageViewer\ImageViewer\ImageViewer_V2\ImageViewer_V2\Icon\intek_logo.png" />
+                <TextBlock
+                    Grid.Column="2"
+                    Margin="0,12,0,0"
+                    HorizontalAlignment="Center"
+                    FontFamily="Arial Black"
+                    FontSize="45"
+                    Foreground="White"
+                    Text="Camera Viewer" />
 
                 <Grid Grid.Column="4">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Ver : " Foreground="White" FontSize="20" FontFamily="Arial Black"  HorizontalAlignment="Right"/>
-                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Version , Mode=OneWay ,UpdateSourceTrigger=PropertyChanged}" Foreground="White" FontSize="20" FontFamily="Arial Black" HorizontalAlignment="Left"/>
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        FontFamily="Arial Black"
+                        FontSize="20"
+                        Foreground="White"
+                        Text="Ver : " />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        HorizontalAlignment="Left"
+                        FontFamily="Arial Black"
+                        FontSize="20"
+                        Foreground="White"
+                        Text="{Binding Version, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
             </Grid>
 
             <Grid Grid.Row="1">
-                <local:ImageViewer/>
+                <local:ImageViewer />
             </Grid>
 
         </Grid>

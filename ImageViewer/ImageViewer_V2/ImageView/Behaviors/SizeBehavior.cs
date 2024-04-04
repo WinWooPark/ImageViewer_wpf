@@ -1,13 +1,11 @@
 ﻿using Microsoft.Xaml.Behaviors;
 using System.Windows.Controls;
-
-using ImageViewer_V2.Model.ManagementSystem;
-using OpenCvSharp;
 using System.Windows;
+using ImageView.Model.ManagementSystem;
 
-namespace ImageViewer_V2.Behaviors
+namespace ImageView.Behaviors
 {
-    public class ImageSizeBehavior : Behavior<Image> 
+    public class ImageSizeBehavior : Behavior<Image>
     {
         protected override void OnAttached()
         {
@@ -22,9 +20,11 @@ namespace ImageViewer_V2.Behaviors
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             MainSystem _mainSystem = MainSystem.Instance;
+
             double Width = AssociatedObject.ActualWidth;
             double Height = AssociatedObject.ActualHeight;
-            _mainSystem.GetImageContolSize(Width, Height);
+
+            _mainSystem.GetImageControlSize(Width, Height);
         }
     }
 
@@ -43,9 +43,11 @@ namespace ImageViewer_V2.Behaviors
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             MainSystem _mainSystem = MainSystem.Instance;
+
             double Width = AssociatedObject.ActualWidth;
             double Height = AssociatedObject.ActualHeight;
-            _mainSystem.GetCanvasContolSize(Width, Height);
+
+            _mainSystem.GetCanvasControlSize(Width, Height);
         }
     }
 }

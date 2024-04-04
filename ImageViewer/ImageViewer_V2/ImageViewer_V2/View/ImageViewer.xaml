@@ -1,38 +1,43 @@
-﻿<UserControl x:Class="ImageViewer_V2.View.ImageViewer"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:ImageViewer_V2.View"
-             xmlns:b = "http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:behaviors ="clr-namespace:ImageViewer_V2.Behaviors"
-             mc:Ignorable="d" 
-             d:DesignHeight="989" d:DesignWidth="1920">
+﻿<UserControl
+    x:Class="ImageViewer_V2.View.ImageViewer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dllView="clr-namespace:ImageView;assembly=ImageView"
+    xmlns:local="clr-namespace:ImageViewer_V2.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="989"
+    d:DesignWidth="1920"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <Style x:Key="HardWarestatus" TargetType="Border">
-            <Setter Property="CornerRadius" Value="5"/>
-            <Setter Property="Margin" Value="3,3,3,3"/>
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Margin" Value="3,3,3,3" />
         </Style>
 
         <Style TargetType="TabItem">
-            <Setter Property="Background" Value="#303030"/>
+            <Setter Property="Background" Value="#303030" />
         </Style>
 
         <Style x:Key="CustomButtom" TargetType="Button">
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="25"/>
-            <Setter Property="Background" Value="#2E3347"/>
-            <Setter Property="Margin" Value="15,15,15,15"/>
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="25" />
+            <Setter Property="Background" Value="#2E3347" />
+            <Setter Property="Margin" Value="15,15,15,15" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"  BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#3E4457"/>
+                                <Setter Property="Background" Value="#3E4457" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -44,33 +49,52 @@
 
 
     <Border BorderBrush="White" BorderThickness="2">
-        <Grid Background="#FF1C2135" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="#FF1C2135">
             <Grid.RowDefinitions>
-                <RowDefinition Height="0.5*"/>
-                <RowDefinition Height="10*"/>
-                <RowDefinition Height="1*"/>
+                <RowDefinition Height="0.5*" />
+                <RowDefinition Height="10*" />
+                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
 
-                <Border Grid.Column="0" Background="Red" Style="{StaticResource HardWarestatus}">
-                    <TextBlock Text="Camera" HorizontalAlignment="Center" Foreground="White" Margin="0,1,0,0" FontSize="25"/>
+                <Border
+                    Grid.Column="0"
+                    Background="Red"
+                    Style="{StaticResource HardWarestatus}">
+                    <TextBlock
+                        Margin="0,1,0,0"
+                        HorizontalAlignment="Center"
+                        FontSize="25"
+                        Foreground="White"
+                        Text="Camera" />
                 </Border>
 
-                <Border Grid.Column="1" Background="Red"  Style="{StaticResource HardWarestatus}">
-                    <TextBlock Text="Light" HorizontalAlignment="Center" Foreground="White" Margin="0,1,0,0" FontSize="25"/>
+                <Border
+                    Grid.Column="1"
+                    Background="Red"
+                    Style="{StaticResource HardWarestatus}">
+                    <TextBlock
+                        Margin="0,1,0,0"
+                        HorizontalAlignment="Center"
+                        FontSize="25"
+                        Foreground="White"
+                        Text="Light" />
                 </Border>
 
 
@@ -78,82 +102,44 @@
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
 
-                <Border BorderBrush="White" BorderThickness="1">
-                    <Grid Grid.Column="0" Background="#303030" ClipToBounds="True" >
-                        <Image Source="{Binding MainImage , UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" HorizontalAlignment="Center"  AllowDrop="True" RenderOptions.BitmapScalingMode="Fant" Grid.Column="1">
-                            <b:Interaction.Behaviors>
-                                <behaviors:ImageSizeBehavior/>
-                                <behaviors:MouseEventBehavior/>
-                            </b:Interaction.Behaviors>
-
-                            <Image.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" CenterX="{Binding CenterPointX}" CenterY="{Binding CenterPointY}"/>
-                                    <TranslateTransform X="{Binding TranslationX}" Y="{Binding TranslationY}" />
-                                </TransformGroup>
-                            </Image.RenderTransform>
-                        </Image>
-
-                        <ItemsControl ItemsSource="{Binding DrawEllipses}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <Canvas >
-                                        <b:Interaction.Behaviors>
-                                            <behaviors:CanvasSizeBehavior/>
-                                        </b:Interaction.Behaviors>
-                                    </Canvas>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemContainerStyle>
-                                <Style>
-                                    <Setter Property="Canvas.Left" Value="{Binding CenterPointX}"/>
-                                    <Setter Property="Canvas.Top" Value="{Binding CenterPointY}"/>
-                                </Style>
-                            </ItemsControl.ItemContainerStyle>
-
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Ellipse Width="{Binding BlobWidth}" Height="{Binding BlobHeight}" Stroke="{Binding Fill}" StrokeThickness="1" />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-
-                    </Grid>
-                </Border>
+                <dllView:ImageView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
                 <Grid Grid.Column="2">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="73*"/>
-                            <ColumnDefinition Width="406*"/>
+                            <ColumnDefinition Width="73*" />
+                            <ColumnDefinition Width="406*" />
                         </Grid.ColumnDefinitions>
-                        <TabControl Grid.Row="0" Background="#FF1C2135" TabStripPlacement="Top" BorderBrush="#FF1C2135" Grid.ColumnSpan="2">
+                        <TabControl
+                            Grid.Row="0"
+                            Grid.ColumnSpan="2"
+                            Background="#FF1C2135"
+                            BorderBrush="#FF1C2135"
+                            TabStripPlacement="Top">
                             <TabItem Header="Image Load">
-                                <local:ImageLoad/>
+                                <local:ImageLoad />
                             </TabItem>
 
                             <TabItem Header="Parameter">
-                                <local:ParameterSetting/>
+                                <local:ParameterSetting />
                             </TabItem>
 
-                            <TabItem Header="Camera Control">
-
-                            </TabItem>
+                            <TabItem Header="Camera Control" />
 
                         </TabControl>
                     </Grid>
 
                     <Grid Grid.Row="1">
-                        <local:SubImageViewer/>
+                        <local:SubImageViewer />
                     </Grid>
                 </Grid>
 
@@ -161,29 +147,43 @@
 
             <Grid Grid.Row="3">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
 
                 <Grid Grid.Column="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0" Style="{StaticResource CustomButtom}" Command="{Binding ImageFitCommand}" Content="Fit"/>
-                    <Button Grid.Column="1" Style="{StaticResource CustomButtom}" Content="Zoom In"/>
-                    <Button Grid.Column="2" Style="{StaticResource CustomButtom}" Content="Zoom Out"/>
+                    <Button
+                        Grid.Column="0"
+                        Command="{Binding ImageFitCommand}"
+                        Content="Fit"
+                        Style="{StaticResource CustomButtom}" />
+                    <Button
+                        Grid.Column="1"
+                        Content="Zoom In"
+                        Style="{StaticResource CustomButtom}" />
+                    <Button
+                        Grid.Column="2"
+                        Content="Zoom Out"
+                        Style="{StaticResource CustomButtom}" />
                 </Grid>
 
                 <Grid Grid.Column="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="2" Style="{StaticResource CustomButtom}" Content="Exit" Command="{Binding ExitCommand}"/>
+                    <Button
+                        Grid.Column="2"
+                        Command="{Binding ExitCommand}"
+                        Content="Exit"
+                        Style="{StaticResource CustomButtom}" />
                 </Grid>
             </Grid>
         </Grid>

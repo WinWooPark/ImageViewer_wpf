@@ -1,10 +1,11 @@
-﻿using ImageViewer_V2.Define;
-using ImageViewer_V2.Model.ManagementSystem;
-using Microsoft.Xaml.Behaviors;
-using System.Windows;
+﻿using Microsoft.Xaml.Behaviors;
 using System.Windows.Controls;
+using System.Windows;
+using ImageView.Model.ManagementSystem;
+using ImageView.Define;
 
-namespace ImageViewer_V2.Behaviors
+
+namespace ImageView.Behaviors
 {
     public class MouseEventBehavior : Behavior<Image>
     {

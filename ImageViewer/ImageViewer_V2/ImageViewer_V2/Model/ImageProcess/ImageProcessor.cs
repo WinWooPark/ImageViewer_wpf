@@ -3,8 +3,8 @@ using ImageViewer_V2.Model.ManagementSystem;
 using OpenCvSharp;
 using System.Diagnostics;
 using ImageViewer_V2.Model.ImageProcess.Data;
-using ImageViewer_V2.Model.DrawObject;
 using System.Windows.Media;
+using ImageViewer_V2.Define;
 
 namespace ImageViewer_V2.Model.ImageProcess
 {
@@ -155,9 +155,9 @@ namespace ImageViewer_V2.Model.ImageProcess
             DrawResult();
 
             _stopWatch.Stop();
-            _systemData.ProcessTime = _stopWatch.ElapsedMilliseconds;
-
-            _mainSystem.CBcoredoneInspction(_buffer);
+            double ProcessTime = _stopWatch.Elapsed.TotalMilliseconds;
+           
+            _mainSystem.CBcoredoneInspction(ProcessTime);
         }
 
         void DrawResult()
@@ -165,36 +165,7 @@ namespace ImageViewer_V2.Model.ImageProcess
             Cv2.CvtColor(_buffer, _result, ColorConversionCodes.GRAY2BGR);
             foreach (BlobData blobData in _systemData.BlobDatas)
             {
-                //string Index = string.Format("{0}", blobData.Index);
-
-                //Point point = new Point((int)blobData.CenterPointX + 5, (int)blobData.CenterPointY + 5);
-
-                //Cv2.PutText(_result, Index, point, HersheyFonts.HersheyPlain, 1, new Scalar(0, 0, 0), 1);
-
-                //Cv2.Circle(_result, (int)blobData.CenterPointX, (int)blobData.CenterPointY, 1, new Scalar(0, 0, 0), 2);
-
-
-                //if (blobData.Result == true)
-                //    Cv2.Circle(_result, (int)blobData.CenterPointX, (int)blobData.CenterPointY, (int)blobData.Radius, new Scalar(0, 255, 0), 2);
-                //else
-                //    Cv2.Circle(_result, (int)blobData.CenterPointX, (int)blobData.CenterPointY, (int)blobData.Radius, new Scalar(0, 0, 255), 2);
-
-
-                DrawEllipse drawEllipse = new DrawEllipse();
-                
-                drawEllipse.BlobSize = _mainSystem.ImageToImageControlLength(new Size2d(blobData.Radius, blobData.Radius));
-
-                Point2d point = _mainSystem.ImageToImageControlCoordi(blobData.CenterPoint);
-                drawEllipse.CenterPoint = _mainSystem.ImageControlToCanvasControlCoordi(point, drawEllipse.BlobSize);
-                
-                drawEllipse.OriginPoint = blobData.CenterPoint;
-
-                drawEllipse.Fill = Brushes.Green;
-
-                if (blobData.Result == false)
-                    drawEllipse.Fill = Brushes.Red;
-
-                _systemData.ReslutEllipse.Enqueue(drawEllipse);
+                _integratedClass.ImageViewAPI.GetDrawObjectEllipse(blobData.LeftTopPoint.X, blobData.LeftTopPoint.Y, blobData.BlobSize.Width, blobData.BlobSize.Height, blobData.Result);
             }
         }
 
@@ -240,7 +211,7 @@ namespace ImageViewer_V2.Model.ImageProcess
             blobData.CenterPointX = parameters.At<double>(0);
             blobData.CenterPointY = parameters.At<double>(1);
             blobData.Radius = Math.Round(Math.Sqrt(Math.Pow(parameters.At<double>(0), 2) + Math.Pow(parameters.At<double>(1), 2) - parameters.At<double>(2)), 2);
-            blobData.BlobSize = new Size2d(blobData.Radius * 2, blobData.Radius * 2);
+            blobData.CalBlobSize();
             return;
         }
 
@@ -250,8 +221,6 @@ namespace ImageViewer_V2.Model.ImageProcess
 
             //if (blobData.Width >= reference || blobData.Height >= reference) return false;
             if (blobData.Radius >= reference) return false;
-
-            //if(blobData.Radius > 300) return false;
             else return true;
         }
 
