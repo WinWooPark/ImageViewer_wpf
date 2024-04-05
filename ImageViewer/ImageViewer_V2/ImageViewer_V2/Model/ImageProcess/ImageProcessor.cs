@@ -162,11 +162,14 @@ namespace ImageViewer_V2.Model.ImageProcess
 
         void DrawResult()
         {
+            _integratedClass.ImageViewAPI.DeleteAllDrawObject();
+
             Cv2.CvtColor(_buffer, _result, ColorConversionCodes.GRAY2BGR);
             foreach (BlobData blobData in _systemData.BlobDatas)
             {
-                _integratedClass.ImageViewAPI.GetDrawObjectEllipse(blobData.LeftTopPoint.X, blobData.LeftTopPoint.Y, blobData.BlobSize.Width, blobData.BlobSize.Height, blobData.Result);
+                _integratedClass.ImageViewAPI.AddDrawObjectEllipse(blobData.LeftTopPoint.X, blobData.LeftTopPoint.Y, blobData.BlobSize.Width, blobData.BlobSize.Height, blobData.Result);
             }
+            _integratedClass.ImageViewAPI.DrawAllObject();
         }
 
         void FittingCircle(OpenCvSharp.Point[] point, out BlobData blobData)

@@ -1,4 +1,7 @@
 ﻿using ImageView.ViewModel;
+using System.Windows;
+using System.Drawing;
+using Size = System.Windows.Size;
 
 namespace ImageView.Model.ManagementSystem
 {
@@ -7,7 +10,17 @@ namespace ImageView.Model.ManagementSystem
 
     public class MainSystemData
     {
-        public MainSystemData() { }
+        public MainSystemData() 
+        {
+            _drawObj = new DrawObject.DrawObject();
+        }
+
+        DrawObject.DrawObject _drawObj;
+        public DrawObject.DrawObject DrawObj
+        {
+            get { return _drawObj; }
+            set { _drawObj = value; }
+        }
 
         ImageViewViewModel _imageViewViewModel;
         public ImageViewViewModel ImageViewViewModel 
@@ -92,5 +105,30 @@ namespace ImageView.Model.ManagementSystem
             get { return _translationY; }
             set { if (_translationY != value) _translationY = value; }
         }
+
+        //Size _shift;
+        public double ShiftWidth 
+        {
+            get; 
+            set; 
+        }
+        public double ShiftHeight
+        {
+            get;
+            set;
+        }
+
+        //Size _ratio;
+        public double RatioX
+        {
+            get;
+            set;
+        }
+        public double RatioY
+        {
+            get;
+            set;
+        }
+
     }
 }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace ImageView.Model.ManagementSystem
 {
@@ -41,12 +42,20 @@ namespace ImageView.Model.ManagementSystem
         {
             ImageControlWidth = Width;
             ImageControlHeight = Height;
+            CalScale();
         }
 
         public void GetCanvasControlSize(double Width, double Height)
         {
             CanvasControlWidth = Width;
             CanvasControlHeight = Height;
+            CalScale();
+        }
+
+        void CalScale() 
+        {
+            RatioX = ImageControlWidth/ ImageWidth;
+            RatioY = ImageControlHeight / ImageHeight;
         }
 
         public void ImageScaleChange(int Delta, double Width, double Height)
@@ -67,6 +76,8 @@ namespace ImageView.Model.ManagementSystem
 
             ImageViewViewModel.CenterPointX = Width / 2;
             ImageViewViewModel.CenterPointY = Height / 2;
+            
+            CalScale();
         }
 
         public void ImageTranslationChange(double offsetX, double offsetY)
@@ -76,14 +87,14 @@ namespace ImageView.Model.ManagementSystem
             ImageViewViewModel.TranslationY += (offsetY * Scale);
         }
 
-        public void GetDrawObjectEllipse(double X , double Y , double Width , double Height , bool Judge)
+        public void AddDrawObjectEllipse(double X , double Y , double Width , double Height , bool Judge)
         {
-           Point point = new Point();
-           Size size = new Size();
-           
+            Point point = new Point();
+            Size size = new Size();
+            
 
-           point = _coordinateTransformations.CoordinateTransformationsPoint(CommonDefine.Coordinate.eImage2Control, new System.Windows.Point(X, Y));
-           size = _coordinateTransformations.CoordinateTransformationsLength(CommonDefine.Coordinate.eImage2Control, new System.Windows.Size(Width, Height));
+            point = _coordinateTransformations.CoordinateTransformationsPoint(CommonDefine.Coordinate.eImage2Control, new System.Windows.Point(X, Y));
+            size = _coordinateTransformations.CoordinateTransformationsLength(CommonDefine.Coordinate.eImage2Control, new System.Windows.Size(Width, Height));
 
             DrawEllipse ellipse = new DrawEllipse(point, size);
 
@@ -92,11 +103,38 @@ namespace ImageView.Model.ManagementSystem
             if (Judge == false)
                 ellipse.Fill = Brushes.Red;
 
+
+            DrawObj.drawEllipses.Enqueue(ellipse);
+        }
+
+        public void UpdateImage(BitmapSource Bitmap) 
+        {
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
-                ImageViewViewModel.DrawEllipses.Add(ellipse);
+                ImageViewViewModel.MainImage = Bitmap;
+                ImageViewViewModel.UpdateResult();
             });
+        }
 
+        public void ImageFit()
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                ImageViewViewModel.Scale = 1;
+                ImageViewViewModel.TranslationX = 0;
+                ImageViewViewModel.TranslationY = 0;
+            });
+        }
+
+        public void DrawAllObject() 
+        {
+            ImageViewViewModel.UpdateResult();
+        }
+
+        public void DeleteAllDrawObject()
+        {
+            DrawObj.DeleteAllDrawObject();
+            ImageViewViewModel.DeleteResult();
         }
     }
 }

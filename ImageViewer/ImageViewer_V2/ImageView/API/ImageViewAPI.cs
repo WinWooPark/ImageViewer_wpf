@@ -1,4 +1,5 @@
 ﻿using ImageView.Model.ManagementSystem;
+using ImageView.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,29 +41,30 @@ namespace ImageView.API
         }
 
 
-        public void GetDrawObjectEllipse(double X, double Y, double Width, double Height, bool Judge) 
+        public void AddDrawObjectEllipse(double X, double Y, double Width, double Height, bool Judge) 
         {
-            _mainSystem.GetDrawObjectEllipse(X, Y, Width, Height, Judge);
+            _mainSystem.AddDrawObjectEllipse(X, Y, Width, Height, Judge);
         }
 
-       public void UpdateImage(BitmapSource Bitmap) 
+        public void DrawAllObject() 
         {
-            System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            {
-                _mainSystem.ImageViewViewModel.MainImage = Bitmap;
-                _mainSystem.ImageViewViewModel.UpdateResult();
-            });
-       }
+            _mainSystem.DrawAllObject();
+        }
 
-       public void ImageFit() 
-       {
-            System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            {
-                _mainSystem.ImageViewViewModel.Scale = 1;
-                _mainSystem.ImageViewViewModel.TranslationX = 0;
-                _mainSystem.ImageViewViewModel.TranslationY = 0;
-            });
-       }
+        public void UpdateImage(BitmapSource Bitmap)
+        {
+            _mainSystem.DeleteAllDrawObject();
+            _mainSystem.UpdateImage(Bitmap);
+        }
 
+        public void ImageFit()
+        {
+            _mainSystem.ImageFit();
+        }
+
+        public void DeleteAllDrawObject()
+        {
+            _mainSystem.DeleteAllDrawObject();
+        }
     }
 }

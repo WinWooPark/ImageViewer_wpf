@@ -1,4 +1,5 @@
 ﻿
+using ImageView.Model.ManagementSystem;
 using System.Windows;
 using System.Windows.Media;
 
@@ -10,8 +11,22 @@ namespace ImageView.Model.DrawObject
 
         public DrawEllipse(Point point , Size size)
         {
-            _centerPoint = point;
-            _ellipseSize = size;
+            _originPoint = point;
+            _origineEllipseSize = size;
+        }
+
+        public void UpdatePosition(double Scale, double TranslationX, double TranslationY) 
+        {
+            // 현재 zoom 과 Pan이 안먹힌 상태의 좌표이다. 여기에서 Zoom과 Pan을 먹힌다.
+          
+            double ShiftX = (MainSystem.Instance.CanvasControlWidth - MainSystem.Instance.ImageControlWidth * Scale) / 2;
+            double ShiftY = (MainSystem.Instance.CanvasControlHeight - MainSystem.Instance.ImageControlHeight * Scale) / 2;
+
+            _centerPoint.X = (_originPoint.X * Scale) + ShiftX + TranslationX;
+            _centerPoint.Y = (_originPoint.Y * Scale) + ShiftY + TranslationY;
+
+            _ellipseSize.Width = (_origineEllipseSize.Width * Scale);
+            _ellipseSize.Height = (_origineEllipseSize.Height * Scale);
         }
 
         SolidColorBrush _fill;
@@ -19,6 +34,13 @@ namespace ImageView.Model.DrawObject
         {
             get { return _fill; }
             set { _fill = value; }
+        }
+
+        Point _originPoint;
+        public Point OriginPoint
+        {
+            get { return _originPoint; }
+            set { _originPoint = value; }
         }
 
         Point _centerPoint;
@@ -29,11 +51,17 @@ namespace ImageView.Model.DrawObject
         }
 
         Size _ellipseSize;
-
         public Size EllipseSize 
         {
             get { return _ellipseSize; }
             set { _ellipseSize = value; }
+        }
+
+        Size _origineEllipseSize;
+        public Size OrigineEllipseSize
+        {
+            get { return _origineEllipseSize; }
+            set { _origineEllipseSize = value; }
         }
 
         public double CenterPointX 

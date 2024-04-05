@@ -62,8 +62,13 @@ namespace ImageViewer_V2.Model.ManagementSystem
             if (dlg.ShowDialog() == true)
             {
                 _systemData.Buffer = Cv2.ImRead(dlg.FileName);
+
+                if (_systemData.Buffer.Empty() == true ||
+                    _systemData.Buffer.Width != Define.CommonDefine.ImageWidth ||
+                    _systemData.Buffer.Height != Define.CommonDefine.ImageHeight)
+                    return;
+
                 BitmapSource Bitmap = SystemData.MatToBitmapSource(_systemData.Buffer);
-                //_integratedClass.ImageViewerViewModel.UpDateMainImage(Bitmap);
                 _integratedClass.ImageViewAPI.UpdateImage(Bitmap);
             }
         }
@@ -106,13 +111,18 @@ namespace ImageViewer_V2.Model.ManagementSystem
 
             //if (_integratedClass.ImageViewerViewModel..BlobDatas.Count != 0) IntegratedClass.Instance.MainViewModel.BlobDatas.Clear();
 
+            _integratedClass.ImageViewAPI.DeleteAllDrawObject();
+
             if (_systemData.Buffer != null)
                 _integratedClass.ImageProcessor.SetImageProcessorBuffer(_systemData.Buffer);
         }
 
         public void CBcoredoneInspction(double ProcessTime) 
         {
-          
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+               _integratedClass.ParameterSettingViewModel.ProcessTime = ProcessTime;
+            });
         }
 
        

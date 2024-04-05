@@ -33,11 +33,15 @@ namespace ImageView.Behaviors
         protected override void OnAttached()
         {
             AssociatedObject.SizeChanged += OnSizeChanged;
+
+            AssociatedObject.MouseLeftButtonDown += AssociatedObject_MouseLButtomDown;
         }
 
         protected override void OnDetaching()
         {
             AssociatedObject.SizeChanged -= OnSizeChanged;
+
+            AssociatedObject.MouseLeftButtonDown -= AssociatedObject_MouseLButtomDown;
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
@@ -48,6 +52,12 @@ namespace ImageView.Behaviors
             double Height = AssociatedObject.ActualHeight;
 
             _mainSystem.GetCanvasControlSize(Width, Height);
+        }
+
+        private void AssociatedObject_MouseLButtomDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Point st = e.GetPosition(e.OriginalSource as IInputElement);
+            bool _isMouseMove = true;
         }
     }
 }

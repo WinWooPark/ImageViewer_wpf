@@ -1,6 +1,7 @@
 ﻿using ImageViewer_V2.Model.Data;
 using ImageViewer_V2.Model.ImageProcess;
 using ImageView.API;
+using ImageView.Define;
 
 namespace ImageViewer_V2.Model.ManagementSystem
 {
@@ -41,7 +42,7 @@ namespace ImageViewer_V2.Model.ManagementSystem
             _systemData = new SystemData();
             _imageProcessor = new ImageProcessor();
             _imageViewAPI = ImageViewAPI.Instance;
-            _imageViewAPI.InitImageView(3780,3780);
+            _imageViewAPI.InitImageView(Define.CommonDefine.ImageWidth, Define.CommonDefine.ImageHeight);
             _imageProcessor.InitImageProcessor(this);
         }
 

@@ -4,6 +4,7 @@ using ImageView.Model.ManagementSystem;
 using System.CodeDom;
 using System.Collections.ObjectModel;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace ImageView.ViewModel
 {
@@ -43,6 +44,8 @@ namespace ImageView.ViewModel
                 {
                     _mainSystem.Scale = value;
                     OnPropertyChanged(nameof(Scale));
+                    DeleteResult();
+                    UpdateResult();
                 }
             }
         }
@@ -82,6 +85,8 @@ namespace ImageView.ViewModel
                 {
                     _mainSystem.TranslationX = value;
                     OnPropertyChanged(nameof(TranslationX));
+                    DeleteResult();
+                    UpdateResult();
                 }
             }
         }
@@ -95,6 +100,8 @@ namespace ImageView.ViewModel
                 {
                     _mainSystem.TranslationY = value;
                     OnPropertyChanged(nameof(TranslationY));
+                    DeleteResult();
+                    UpdateResult();
                 }
             }
         }
@@ -143,25 +150,52 @@ namespace ImageView.ViewModel
 
         public void UpdateResult()
         {
-            UpdateEllipseResult();
-            UpdateLineResult();
-            UpdateRectResult();
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                UpdateEllipseResult();
+                UpdateLineResult();
+                UpdateRectResult();
+            });
         }
 
+        public void DeleteResult()
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                DrawEllipses.Clear();
+                DrawLine.Clear();
+                DrawRect.Clear();
+            });
+        }
 
         void UpdateEllipseResult()
         {
-
+            Queue<DrawEllipse> obj = _mainSystem.DrawObj.drawEllipses;
+            foreach (DrawEllipse drawEllipse in obj) 
+            {
+                drawEllipse.UpdatePosition(Scale, TranslationX, TranslationY);
+                DrawEllipses.Add(drawEllipse);
+            }
         }
 
         void UpdateLineResult()
         {
+            Queue<DrawLine> obj = _mainSystem.DrawObj.drawLines;
 
+            foreach (DrawLine drawLines in obj)
+                DrawLine.Add(drawLines);
+
+            
         }
 
         void UpdateRectResult()
         {
+            Queue<DrawRect> obj = _mainSystem.DrawObj.drawRects;
 
+            foreach (DrawRect drawRects in obj)
+                DrawRect.Add(drawRects);
+
+            
         }
     }
 }
