@@ -106,16 +106,24 @@ namespace ImageView.Model.ManagementSystem
             set { if (_translationY != value) _translationY = value; }
         }
 
-        //Size _shift;
+        
+        double _shiftWidth = 0;
         public double ShiftWidth 
         {
-            get; 
-            set; 
+            get { return _shiftWidth; }
+            set 
+            {
+                if (_shiftWidth != value) _shiftWidth = value;
+            }
         }
+        double _shiftHeight = 0;
         public double ShiftHeight
         {
-            get;
-            set;
+            get { return _shiftHeight; }
+            set
+            {
+                if (_shiftHeight != value) _shiftHeight = value;
+            }
         }
 
         //Size _ratio;

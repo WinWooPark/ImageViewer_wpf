@@ -171,9 +171,10 @@ namespace ImageView.ViewModel
         void UpdateEllipseResult()
         {
             Queue<DrawEllipse> obj = _mainSystem.DrawObj.drawEllipses;
-            foreach (DrawEllipse drawEllipse in obj) 
+
+            foreach (DrawEllipse drawEllipse in obj)
             {
-                drawEllipse.UpdatePosition(Scale, TranslationX, TranslationY);
+                drawEllipse.UpdatePosition(Scale, _mainSystem.ShiftWidth, _mainSystem.ShiftHeight, TranslationX, TranslationY);
                 DrawEllipses.Add(drawEllipse);
             }
         }

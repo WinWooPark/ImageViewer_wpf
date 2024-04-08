@@ -15,12 +15,9 @@ namespace ImageView.Model.DrawObject
             _origineEllipseSize = size;
         }
 
-        public void UpdatePosition(double Scale, double TranslationX, double TranslationY) 
+        public void UpdatePosition(double Scale, double ShiftX, double ShiftY, double TranslationX, double TranslationY) 
         {
             // 현재 zoom 과 Pan이 안먹힌 상태의 좌표이다. 여기에서 Zoom과 Pan을 먹힌다.
-          
-            double ShiftX = (MainSystem.Instance.CanvasControlWidth - MainSystem.Instance.ImageControlWidth * Scale) / 2;
-            double ShiftY = (MainSystem.Instance.CanvasControlHeight - MainSystem.Instance.ImageControlHeight * Scale) / 2;
 
             _centerPoint.X = (_originPoint.X * Scale) + ShiftX + TranslationX;
             _centerPoint.Y = (_originPoint.Y * Scale) + ShiftY + TranslationY;

@@ -42,20 +42,30 @@ namespace ImageView.Model.ManagementSystem
         {
             ImageControlWidth = Width;
             ImageControlHeight = Height;
-            CalScale();
+            
+            CalRatio();
         }
 
         public void GetCanvasControlSize(double Width, double Height)
         {
             CanvasControlWidth = Width;
             CanvasControlHeight = Height;
-            CalScale();
+
+            CalRatio();
         }
 
-        void CalScale() 
+        void CalRatio() 
         {
             RatioX = ImageControlWidth/ ImageWidth;
             RatioY = ImageControlHeight / ImageHeight;
+
+            CalShift(Scale);
+        }
+
+        void CalShift(double scale) 
+        {
+            ShiftWidth = ((CanvasControlWidth - (ImageControlWidth * scale)) / 2);
+            ShiftHeight = ((CanvasControlHeight - (ImageControlHeight * scale)) / 2);
         }
 
         public void ImageScaleChange(int Delta, double Width, double Height)
@@ -63,21 +73,24 @@ namespace ImageView.Model.ManagementSystem
             ImageControlWidth = Width;
             ImageControlHeight = Height;
 
+            double scale = ImageViewViewModel.Scale;
+
             if (Delta > 0)
             {
-                ImageViewViewModel.Scale += CommonDefine.ScaleStep;
-                if (ImageViewViewModel.Scale > CommonDefine.ScaleMax) ImageViewViewModel.Scale = CommonDefine.ScaleMax;
+                scale += CommonDefine.ScaleStep;
+                if (scale > CommonDefine.ScaleMax) scale = CommonDefine.ScaleMax;
             }
             else
             {
-                ImageViewViewModel.Scale -= CommonDefine.ScaleStep;
-                if (ImageViewViewModel.Scale < CommonDefine.ScaleMin) ImageViewViewModel.Scale = CommonDefine.ScaleMin;
+                scale -= CommonDefine.ScaleStep;
+                if (scale < CommonDefine.ScaleMin) scale = CommonDefine.ScaleMin;
             }
 
+            CalShift(scale);
+
+            ImageViewViewModel.Scale = scale;
             ImageViewViewModel.CenterPointX = Width / 2;
             ImageViewViewModel.CenterPointY = Height / 2;
-            
-            CalScale();
         }
 
         public void ImageTranslationChange(double offsetX, double offsetY)

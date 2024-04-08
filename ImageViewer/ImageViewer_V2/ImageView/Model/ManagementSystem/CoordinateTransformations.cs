@@ -76,12 +76,9 @@ namespace ImageView.Model.ManagementSystem
         Size CoordinateTransformationsControlToImageLength(Size Input)
         {
             Size Output = new Size();
-            //1. Image상의 픽셀 거리를  Image Control의 상의 거리로변환한다.
-            double ScaleX = _mainSystem.ImageWidth / _mainSystem.ImageControlWidth;
-            double ScaleY = _mainSystem.ImageWidth / _mainSystem.ImageControlHeight;
-
-            Output.Width = Input.Width * ScaleX;
-            Output.Height = Input.Height * ScaleY;
+     
+            Output.Width = Input.Width / _mainSystem.RatioX;
+            Output.Height = Input.Height / _mainSystem.RatioY;
 
             return Output;
         }
