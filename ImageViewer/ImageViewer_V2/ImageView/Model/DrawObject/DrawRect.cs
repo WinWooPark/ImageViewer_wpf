@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ImageView.Model.DrawObject
 {
-    public class DrawRect
+    internal class DrawRect
     {
     }
 }

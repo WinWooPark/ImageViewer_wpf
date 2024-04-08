@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace ImageView.Model.ManagementSystem
 {
-    public class CoordinateTransformations
+    internal class CoordinateTransformations
     {
         MainSystem _mainSystem;
         public CoordinateTransformations(MainSystem mainSystem) 

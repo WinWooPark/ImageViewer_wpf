@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 
 namespace ImageView.Model.ManagementSystem
 {
-    public class MainSystem : MainSystemData
+    internal class MainSystem : MainSystemData
     {
         private static object obj = new object();
         private static MainSystem instance;

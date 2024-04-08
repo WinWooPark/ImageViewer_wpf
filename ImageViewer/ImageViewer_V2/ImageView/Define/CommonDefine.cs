@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ImageView.Define;
 
-static public class CommonDefine
+static internal class CommonDefine
 {
     public const double ScaleStep = 0.1;
     public const double ScaleMax = 40;

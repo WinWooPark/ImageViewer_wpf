@@ -5,7 +5,7 @@ using ImageView.Model.ManagementSystem;
 
 namespace ImageView.Behaviors
 {
-    public class ImageSizeBehavior : Behavior<Image>
+    internal class ImageSizeBehavior : Behavior<Image>
     {
         protected override void OnAttached()
         {

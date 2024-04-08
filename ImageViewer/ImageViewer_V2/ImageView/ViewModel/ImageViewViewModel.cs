@@ -8,7 +8,7 @@ using System.Windows.Shapes;
 
 namespace ImageView.ViewModel
 {
-    public class ImageViewViewModel : ObservableObject
+    internal class ImageViewViewModel : ObservableObject
     {
         private MainSystem _mainSystem = null;
         public ImageViewViewModel(MainSystem mainSystem)

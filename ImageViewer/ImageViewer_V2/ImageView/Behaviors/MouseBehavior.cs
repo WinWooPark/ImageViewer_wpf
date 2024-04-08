@@ -7,7 +7,7 @@ using ImageView.Define;
 
 namespace ImageView.Behaviors
 {
-    public class MouseEventBehavior : Behavior<Image>
+    internal class MouseEventBehavior : Behavior<Image>
     {
         System.Windows.Point _startPoint;
         System.Windows.Point _currentPoint;

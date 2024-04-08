@@ -5,7 +5,7 @@ using System.Windows.Media;
 
 namespace ImageView.Model.DrawObject
 {
-    public class DrawEllipse
+    internal class DrawEllipse
     {
         public DrawEllipse(){}
 
