@@ -6,6 +6,8 @@ using ImageViewer_V2.Model.ImageProcess.Data;
 using System.Windows.Media;
 using ImageViewer_V2.Define;
 
+
+
 namespace ImageViewer_V2.Model.ImageProcess
 {
     public class ImageProcessor
@@ -117,6 +119,8 @@ namespace ImageViewer_V2.Model.ImageProcess
             Cv2.FindContours(_Threshold, out contours, out hierarchyIndex, RetrievalModes.External, ContourApproximationModes.ApproxNone);
 
             OpenCvSharp.Point[] CenterPoint = new OpenCvSharp.Point[contours.Length];
+
+
 
             for (int i = 0; i < contours.Length; ++i)
             {

@@ -133,8 +133,9 @@
                                 <local:ParameterSetting />
                             </TabItem>
 
-                            <TabItem Header="Camera Control" />
-
+                            <TabItem Header="Camera Control">
+                                <local:CameraControl />
+                            </TabItem>
                         </TabControl>
                     </Grid>
 
