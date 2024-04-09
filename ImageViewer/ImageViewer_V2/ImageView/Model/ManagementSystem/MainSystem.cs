@@ -42,7 +42,10 @@ namespace ImageView.Model.ManagementSystem
         {
             ImageControlWidth = Width;
             ImageControlHeight = Height;
-            
+
+            ImageViewViewModel.CenterPointX = Width / 2;
+            ImageViewViewModel.CenterPointY = Height / 2;
+
             CalRatio();
         }
 
@@ -68,10 +71,9 @@ namespace ImageView.Model.ManagementSystem
             ShiftHeight = ((CanvasControlHeight - (ImageControlHeight * scale)) / 2);
         }
 
-        public void ImageScaleChange(int Delta, double Width, double Height)
+        public void ImageScaleChange(int Delta)
         {
-            ImageControlWidth = Width;
-            ImageControlHeight = Height;
+      
 
             double scale = ImageViewViewModel.Scale;
 
@@ -89,15 +91,13 @@ namespace ImageView.Model.ManagementSystem
             CalShift(scale);
 
             ImageViewViewModel.Scale = scale;
-            ImageViewViewModel.CenterPointX = Width / 2;
-            ImageViewViewModel.CenterPointY = Height / 2;
         }
 
         public void ImageTranslationChange(double offsetX, double offsetY)
         {
             //스케일을 곱해주는 이유는 확대 되었을때 그만큼 더 움직일수 있도록 가중치를 부여 한것이다.
-            ImageViewViewModel.TranslationX += (offsetX * Scale);
-            ImageViewViewModel.TranslationY += (offsetY * Scale);
+            ImageViewViewModel.TranslationX += (offsetX * Scale * CommonDefine.MouseSensitivity);
+            ImageViewViewModel.TranslationY += (offsetY * Scale * CommonDefine.MouseSensitivity);
         }
 
         public void AddDrawObjectEllipse(double X , double Y , double Width , double Height , bool Judge)

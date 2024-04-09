@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ImageViewer_V2.View"
+    xmlns:dllImageView ="clr-namespace:ImageView;assembly=ImageView"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="989"
     d:DesignWidth="1916"
@@ -25,10 +26,7 @@
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0" Background="#303030">
-                <Border BorderBrush="White" BorderThickness="1">
-                    <Image />
-                </Border>
-
+                <!--<dllImageView:ImageView/>-->
             </Grid>
 
             <Grid Grid.Column="1" Background="#303030">

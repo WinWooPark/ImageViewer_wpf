@@ -13,6 +13,11 @@ namespace ImageView.Behaviors
         System.Windows.Point _currentPoint;
         bool _isMouseMove;
 
+        public MouseEventBehavior()
+        {
+            _isMouseMove = false;
+        }
+
         protected override void OnAttached()
         {
             AssociatedObject.MouseWheel += AssociatedObject_MouseWheel;
@@ -35,7 +40,7 @@ namespace ImageView.Behaviors
             Image image = sender as Image;
 
             MainSystem _mainSystem = MainSystem.Instance;
-            _mainSystem.ImageScaleChange(e.Delta, image.ActualWidth, image.ActualHeight);
+            _mainSystem.ImageScaleChange(e.Delta);
         }
 
         private void AssociatedObject_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
